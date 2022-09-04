@@ -4,12 +4,12 @@
 #!/bin/bash
 
 QUEST_ROOT_DIR=${PWD}
-BUILD_QUEST_NAME=reference_quest
+BUILD_QUEST_NAME=web_resiliency_quest
 BUILD_QUEST_ID=2ae514a9-a6dc-4fc0-a797-3f4a7bbd1d63
 BUILD_QUEST_BUCKET_NAME=${QDK_ASSETS_BUCKET}                              # when deploying locally
 #BUILD_QUEST_BUCKET_NAME=ee-assets-prod-us-east-1                         # when deploying to production
 # Include trailing / if a value is defined!
-BUILD_QUEST_BUCKET_PREFIX=                                                # when deploying locally
+BUILD_QUEST_BUCKET_PREFIX=web_resiliency_quest/                           # when deploying locally
 #BUILD_QUEST_BUCKET_PREFIX=modules/9c0e89820b864addaed45ec2f5440379/v5/   # when deploying to production
 
 QUEST_ARTIFACTS_ZIP=gdQuests-${BUILD_QUEST_ID}-quest-artifacts.zip        # don't change

@@ -118,70 +118,398 @@ Resources:
     Type: Custom::ResourceLookup
     Properties:
       ServiceToken: !GetAtt ResourceLookupLambda.Arn
-    
-  WebAppOnEC2:
-    Type: AWS::EC2::Instance
+
+  # Creating the VPC
+  3TierVPC:
+    Type: 'AWS::EC2::VPC'
     Properties:
-      ImageId: !FindInMap [AWSRegionAMI, !Ref 'AWS::Region', 'HVM64']
-      InstanceType: 't2.nano'
-      UserData: !Base64
-        Fn::Join:
-        - "\n"
-        - - '#!/bin/bash -xe'
-          - 'yum update -y'
-          - 'yum install -y httpd'
-          - 'echo "<html><body><h1>This is our brand new web app</h1><p>Something is still missing but not too bad for a start</p></body></html>" > /var/www/html/index.html'
-          - 'service httpd start'
-      SecurityGroupIds:
-        - Ref: PublicSecurityGroup
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: Reference Quest Web App
+          Value: !Join
+            - ''
+            - - !Ref 'AWS::StackName'
+              - '-3TierVPC'
 
-  PublicSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+  # Route Table
+  RouteTable:
+    Type: AWS::EC2::RouteTable
     Properties:
-      GroupName: "public-sg"
-      GroupDescription: "Security group for EC2 in public subnet"
-      # The VpcId property below is provided just as an example for the ResourceLookup custom resource.
-      # In reality, there is no need for it in this case since by default the Security Group will already
-      # be associated with the default VPC in the account
-      VpcId: !GetAtt ResourceLookup.VpcId
+      VpcId: !Ref '3TierVPC'
+
+   # Creating an Internet Gateway
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    DependsOn: '3TierVPC'
+
+  # InternetGatewayAttachment to VPC
+  InternetGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      InternetGatewayId: !Ref InternetGateway
+
+  # Create Public Subnet One
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.0.0/20
+      MapPublicIpOnLaunch: true
+
+  # Create Public Subnet Two
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.16.0/20
+      MapPublicIpOnLaunch: true
+
+  # Create VPC Route Table
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref '3TierVPC'
+
+  # Create PublicRoute
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: 'InternetGateway'
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # Associate Public Subnet One 
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  # Associate Public Subnet Two
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+
+  # Create Security Group
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: SecurityGroup-07
+      GroupDescription: Open HTTP (port 80) and SSH (port 22)
+      VpcId: !Ref '3TierVPC'
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
-        CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: name
-          Value: Reference Quest Web App Security Group
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
 
-  DeveloperUser:
-    Type: 'AWS::IAM::User'
+  # Create Launch Template
+  LaunchTemplate:
+    Type: 'AWS::EC2::LaunchTemplate'
     Properties:
-        UserName: ReferenceDeveloper
-        ManagedPolicyArns:
-           - 'arn:aws:iam::aws:policy/AdministratorAccess'
-  AccessKeys:
-    Type: AWS::IAM::AccessKey
+      LaunchTemplateName: !Sub '${AWS::StackName}-wp-launchTemplate4ASG'
+      LaunchTemplateData:
+        NetworkInterfaces:
+          - DeviceIndex: 0
+            AssociatePublicIpAddress: true
+            DeleteOnTermination: true
+            Groups:
+              - !Ref InstanceSecurityGroup
+        ImageId: ami-0022f774911c1d690
+        InstanceType: t3a.small
+        UserData: !Base64 
+          'Fn::Sub': |
+            #!/bin/bash -xe
+            yum -y update
+            yum install -y httpd wget git
+            cd /tmp
+            availabilityZone=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
+            git clone https://github.com/glendont/aws-multi-region-web.git
+            cp ./aws-multi-region-web/gameday-web/* /var/www/html
+            cd /var/www/html
+            echo "Availability Zone: $availabilityZone </span>" >> index.html 
+            cat second-half.html >> index.html
+            cd /tmp
+            usermod -a -G apache ec2-user   
+            chown -R ec2-user:apache /var/www
+            chmod 2775 /var/www
+            find /var/www -type d -exec chmod 2775 {} \;
+            find /var/www -type f -exec chmod 0664 {} \;
+            systemctl enable httpd
+            systemctl start httpd
+        #KeyName: "oneclick"
+        # SecurityGroupIds:
+        #   - !Ref InstanceSecurityGroup
+        # VpcId: !Ref 3TierVPC
+        # SubnetId: !Ref PrivateSubnet1        
+
+  # Create AutoScaling Group
+  AutoScalingGroup:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '5'
+      MinSize: '2'
+      DesiredCapacity: '2'
+      VPCZoneIdentifier:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+      MetricsCollection:
+        - Granularity: 1Minute
+      TargetGroupARNs:
+        - !Ref "ELBTargetGroup"
+
+
+  # Create a Scaling Policy
+  ScalingPolicy07:
+    Type: 'AWS::AutoScaling::ScalingPolicy'
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      ScalingAdjustment: '1'
+
+  # Create Private Subnet One for App
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.32.0/20
+      MapPublicIpOnLaunch: false
+
+  # Create Private Subnet Two for App
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.48.0/20
+      MapPublicIpOnLaunch: false
+
+  # Create Private Subnet Three for DB
+  PrivateSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.64.0/20
+      MapPublicIpOnLaunch: false
+
+  # Create Private Subnet Four for DB
+  PrivateSubnet4:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref '3TierVPC'
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.80.0/20
+      MapPublicIpOnLaunch: false
+
+ # Create Private Route Table
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref '3TierVPC'
+
+  # Create PrivateRoute
+  # PrivateRoute2:
+  #   Type: AWS::EC2::Route
+  #   Properties:
+  #     RouteTableId: !Ref PrivateRouteTable2
+  #     DestinationCidrBlock: 0.0.0.0/0
+  #     GatewayId: !Ref InternetGateway
+
+  # Associate Private Subnet One
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet1
+
+  # Associate Private Subnet Two
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+  # Create AutoScaling Group
+  AutoScalingGroup2:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '5'
+      MinSize: '2'
+      DesiredCapacity: '2'
+      VPCZoneIdentifier:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      MetricsCollection:
+        - Granularity: 1Minute
+
+  # Create a Scaling Policy
+  ScalingPolicy02:
+    Type: 'AWS::AutoScaling::ScalingPolicy'
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      ScalingAdjustment: '1'
+
+  # Create Security Group
+  InstanceSecurityGroup2:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: SecurityGroup-08
+      GroupDescription: Open HTTP (port 80) and SSH (port 22)
+      VpcId: !Ref '3TierVPC'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+
+  ####### Elastic Load Balancers #######
+  # Create Security Group for ELB
+  ELBSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: ELBSecurityGroup
+      GroupDescription: Open HTTP (port 80) and HTTPS (port 443)
+      VpcId: !Ref '3TierVPC'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  # Create Application Load Balancer
+  ElasticLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: 'InternetGateway'
     Properties: 
-      UserName:  
-        Ref: DeveloperUser
+      IpAddressType: ipv4
+      # LoadBalancerAttributes: 
+      #   - LoadBalancerAttribute
+      Name: ElasticLoadBalancer
+      Scheme: internet-facing
+      SecurityGroups: 
+        - !Ref "ELBSecurityGroup"
+      # SubnetMappings: 
+      #   - SubnetId: !Ref "PublicSubnet1"
+      #   - SubnetId: !Ref "PublicSubnet2"
+      Subnets: 
+        - !Ref "PublicSubnet1"
+        - !Ref "PublicSubnet2"
+      # Tags: 
+      #   - Tag
+      Type: application
+
+  # Target Group
+  ELBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties: 
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 60
+      HealthCheckPath: "/"
+      HealthCheckPort: 80
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 30
+      HealthyThresholdCount: 5
+      IpAddressType: ipv4
+      Name: TargetGroup
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      UnhealthyThresholdCount: 3
+      VpcId: !Ref "3TierVPC"
+
+  # ELB Listener
+  ELBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      DefaultActions: 
+        - Type: "forward"
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref "ELBTargetGroup"
+      LoadBalancerArn: !Ref "ElasticLoadBalancer" 
+      Port: '80'
+      Protocol: HTTP
+
+  # S3
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Sub gameday-cloudfront-logs-${AWS::AccountId}-${AWS::Region}
+
+  # WAF
+  WebApplicationFirewall:
+    Type: AWS::WAFv2::WebACL
+    Properties: 
+      Description: Web ACL for Cloudfront
+      Name: waf-web-acl
+      Scope: CLOUDFRONT
+      DefaultAction:
+        Allow: {}
+      VisibilityConfig: 
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: ExampleWebACLMetric
+
+  # SNS Topic
+  SNS:
+    Type: AWS::SNS::Topic
+    Properties: 
+      DisplayName: SNS For Cloudwatch alarm
+      TopicName: SNS-topic-for-cloudwatch-alarm
+
+  # CloudFront
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - DomainName: www.amazon.com
+          Id: defaultOrigin
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        Enabled: 'true'
+        DefaultCacheBehavior:
+          TargetOriginId: defaultOrigin
+          ForwardedValues:
+            QueryString: 'false'
+            Cookies:
+              Forward: all
+          ViewerProtocolPolicy: allow-all
+
 
 Outputs:
-  EC2IPAddress:
-    Description: The IP address of the EC2 instance running the web application
-    Value: !GetAtt WebAppOnEC2.PublicIp
-
-  SecurityGroup:
-    Description: The Security Group ID
-    Value: !Ref PublicSecurityGroup
-
-  UserAccessKeyName:
-    Description: Access key for the user
-    Value:
-      Ref: AccessKeys
-
   # This section modifies the team's TeamRole IAM role to restrict the listed actions on the specified resources.
   # The purpose is to avoid that a team cheats by picking into or execute resources they shouldn't be able to manipulate
   QuestsResourceLocks:

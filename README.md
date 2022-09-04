@@ -1,5 +1,5 @@
-# AWS GameDay Quest - Web Resiliency
-Owners and Maintainers: NAME AND ALIAS TO BE INSERTED
+# AWS GameDay Quest - Reference Quest
+Owners and Maintainers: Lorenzo Ciaravola (lciaravo@)
 
 ## Documentation
 [Quest Wiki](https://w.amazon.com/bin/view/AWS_GameDay/Quests/reference_quest)
