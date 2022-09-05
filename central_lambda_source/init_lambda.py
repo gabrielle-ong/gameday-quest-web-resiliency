@@ -55,7 +55,7 @@ def lambda_handler(event, context):
             'security-group': security_group,
             'is-ip-address': False,
             'is-monitoring-chaos-started': False,
-            'is-monitoring-chaos-done': False,
+            'is-attach-cloudfront-origin-done': False,
             'is-cloudshell-launched': False,
             'accesskey-value': accesskey_value,
             'is-accesskey-rotated': False,
@@ -89,17 +89,17 @@ def lambda_handler(event, context):
         markdown=output_const.TASK1_MARKDOWN,
     )
 
-    # Post task 2 instructions
+    # Post task 2a instructions
     image_url = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}curl.jpeg",signed_duration=86400)
 
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
-        key=output_const.TASK2_KEY,
-        label=output_const.TASK2_LABEL,
-        value=output_const.TASK2_VALUE.format(image_url),
-        dashboard_index=output_const.TASK2_INDEX,
-        markdown=output_const.TASK2_MARKDOWN,
+        key=output_const.TASK2A_KEY,
+        label=output_const.TASK2A_LABEL,
+        value=output_const.TASK2A_VALUE.format(image_url),
+        dashboard_index=output_const.TASK2A_INDEX,
+        markdown=output_const.TASK2A_MARKDOWN,
     )
 
     quests_api_client.post_input(
@@ -111,7 +111,7 @@ def lambda_handler(event, context):
         dashboard_index=input_const.TASK1_ENDPOINT_INDEX
     )
 
-    # Post task 2 hint
+    # Post task 2a hint
     quests_api_client.post_hint(
         team_id=team_data['team-id'],
         quest_id=QUEST_ID,
@@ -121,6 +121,68 @@ def lambda_handler(event, context):
         value=hint_const.TASK2_HINT1_VALUE,
         dashboard_index=hint_const.TASK2_HINT1_INDEX,
         cost=hint_const.TASK2_HINT1_COST,
+        status=hint_const.STATUS_OFFERED
+    )
+
+    # Post task 2b instructions
+    quests_api_client.post_output(
+        team_id=team_id,
+        quest_id=QUEST_ID,
+        key=output_const.TASK2B_KEY,
+        label=output_const.TASK2B_LABEL,
+        value=output_const.TASK2B_VALUE,
+        dashboard_index=output_const.TASK2B_INDEX,
+        markdown=output_const.TASK2B_MARKDOWN,
+    )
+    quests_api_client.post_input(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        key=input_const.TASK3_READY_KEY,
+        label=input_const.TASK3_READY_LABEL,
+        dashboard_index=input_const.TASK3_READY_INDEX
+    )
+
+    # Post task 2b hint
+    quests_api_client.post_hint(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        hint_key=hint_const.TASK3_HINT1_KEY,
+        label=hint_const.TASK3_HINT1_LABEL,
+        description=hint_const.TASK3_HINT1_DESCRIPTION,
+        value=hint_const.TASK3_HINT1_VALUE,
+        dashboard_index=hint_const.TASK3_HINT1_INDEX,
+        cost=hint_const.TASK3_HINT1_COST,
+        status=hint_const.STATUS_OFFERED
+    )
+
+    # Post task 2c instructions
+    quests_api_client.post_output(
+        team_id=team_id,
+        quest_id=QUEST_ID,
+        key=output_const.TASK2C_KEY,
+        label=output_const.TASK2C_LABEL,
+        value=output_const.TASK2C_VALUE,
+        dashboard_index=output_const.TASK2C_INDEX,
+        markdown=output_const.TASK2C_MARKDOWN,
+    )
+    quests_api_client.post_input(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        key=input_const.TASK3_READY_KEY,
+        label=input_const.TASK3_READY_LABEL,
+        dashboard_index=input_const.TASK3_READY_INDEX
+    )
+
+    # Post task 2c hint
+    quests_api_client.post_hint(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        hint_key=hint_const.TASK3_HINT1_KEY,
+        label=hint_const.TASK3_HINT1_LABEL,
+        description=hint_const.TASK3_HINT1_DESCRIPTION,
+        value=hint_const.TASK3_HINT1_VALUE,
+        dashboard_index=hint_const.TASK3_HINT1_INDEX,
+        cost=hint_const.TASK3_HINT1_COST,
         status=hint_const.STATUS_OFFERED
     )
 
