@@ -52,11 +52,14 @@ def lambda_handler(event, context):
     # Task 1 evaluation
     team_data = attach_cloudfront_origin(quests_api_client, team_data)
     
-    # Task 2 evaluation
+    # Task 2a evaluation
     team_data = evaluate_cloudfront_logging(quests_api_client, team_data)
 
-    # Task 3 evaluation
-    team_data = evaluate_access_key(quests_api_client, team_data)
+    # Task 2c evaluation
+    team_data = evaluate_cloudfront_waf(quests_api_client, team_data)
+
+    # # Task 3 evaluation
+    # team_data = evaluate_access_key(quests_api_client, team_data)
 
     # Task 4 evaluation
     team_data = evaluate_final_answer(quests_api_client, team_data)
@@ -340,75 +343,188 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
     return team_data
 
 
-# Task 3 - Access Key Rotation
-def evaluate_access_key(quests_api_client, team_data):
+# Task 2c - WAF Rule
+# 'is-cloudfront-ip-set-created'
+# 'is-cloudfront-waf-attached'
+def evaluate_cloudfront_waf(quests_api_client, team_data):
+    print(f"Evaluating CloudFront WAF task for team {team_data['team-id']}")
 
-    # Check whether the team has accepted the challenge and task has not been completed yet
-    if team_data['credentials-task-started'] and not team_data['is-accesskey-rotated']:
+    # Check whether task was completed already
+    if not team_data['is-cloudfront-ip-set-created'] or team_data['is-cloudfront-waf-attached']:
+
+        ip_address_from_task2b = "10.0.0.0" + "/32"
+        created_web_acl_name = "waf-web-acl"
+        web_acl_id = ""
+        web_acl_arn = ""
+        ip_set_id = ""
+        ip_set_arn = ""
+        set_web_acl_flag = False
+        
 
         # Establish cross-account session
         print(f"Assuming Ops role for team {team_data['team-id']}")
         xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
-    
-        # Check user's access key
-        iam_client = xa_session.client('iam')
-        keys = iam_client.list_access_keys(UserName='ReferenceDeveloper')
-        status = "Not found"
-        for key in keys['AccessKeyMetadata']:
-            if (key['AccessKeyId'] == team_data['accesskey-value']):
-                status = key['Status']
-                print(f"Access key exists, checking if its active")
-                break
-    
-        if status == "Active":
-            print(f"access key has not been deactivated")
 
-            # Detract points
-            quests_api_client.post_score_event(
-                team_id=team_data["team-id"],
-                quest_id=QUEST_ID,
-                description=scoring_const.KEY_NOT_ROTATED_DESC,
-                points=scoring_const.KEY_NOT_ROTATED_POINTS
-            )
+        # Lookup events in WAF IP Sets
+        waf_client = xa_session.client('wafv2')
+        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
+        waf_ip_set_response = waf_client.list_ip_sets(Scope="CLOUDFRONT")
+        ip_sets = waf_ip_set_response['IPSets']
+        for ip_set in ip_sets:
+            waf_ip_set_response = waf_client.get_ip_set(Id=ip_set['Id'], Scope="CLOUDFRONT", Name=ip_set['Name'])
+            ip_set_addresses = waf_ip_set_response['IPSet']['Addresses']
+            for ip_set_address in ip_set_addresses:
+                if ip_set_address == ip_address_from_task2b:
+                    ip_set_id = ip_set['Id']
+                    ip_set_arn = ip_set['ARN']
+                    break
         
-        elif status == "Inactive" or status == "Not found":
-                    
-            print(f"Awarding points. Key has been deactivated or deleted")
+        # Lookup events in WAF WebACL
+        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
+        waf_web_acls_response = waf_client.list_web_acls(Scope="CLOUDFRONT")
+        web_acls = waf_web_acls_response['WebACLs']
+        for web_acl in web_acls:
+            if web_acl['Name'] == created_web_acl_name:
+                web_acl_id = web_acl['Id']
+                web_acl_arn = web_acl['ARN']
+                break
 
-            # Switch flag
-            team_data['is-accesskey-rotated'] = True
+        waf_web_acl_response = waf_client.get_web_acl(Name=created_web_acl_name, Scope="CLOUDFRONT", Id=web_acl_id)
+        web_acl_rules = waf_web_acl_response['WebACL']['Rules']
+        for rule in web_acl_rules:
+            rule_ip_set = rule['Statement']['IPSetReferenceStatement']
+            if rule_ip_set['ARN'] == ip_set_arn:
+                waf_web_acl_flag = True
+                break
 
-            # Delete hint
-            response = quests_api_client.delete_hint(
-                team_id=team_data['team-id'],
-                quest_id=QUEST_ID,
-                hint_key=hint_const.TASK3_HINT1_KEY,
-                detail=True
-            )
-            # Handling a response status code other than 200. In this case, we are just logging
-            if response['statusCode'] != 200:
-                print(response)
+            # rule_response = waf_client.get_rule_group(Name=rule['Name'], Scope="CLOUDFRONT")
+            # rule_predicates = rule_response['Rule']['Predicates']
+            # for predicate in rule_predicates:
+            #     if predicate['DataId'] == ip_set_id:
+            #         waf_web_acl_flag = True
+            #         break
+        
+        if ip_set_id != "" and waf_web_acl_flag:
+            team_data['is-cloudfront-ip-set-created'] = True
+            # Lookup events in CloudFront
+            cloudfront_client = xa_session.client('cloudfront')
+            quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
+            cloudfront_response = cloudfront_client.list_distributions()
+            distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
+            cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
 
-            # Post task final message
-            quests_api_client.post_output(
-                team_id=team_data['team-id'],
-                quest_id=QUEST_ID,
-                key=output_const.TASK3_COMPLETE_KEY,
-                label=output_const.TASK3_COMPLETE_LABEL,
-                value=output_const.TASK3_COMPLETE_VALUE,
-                dashboard_index=output_const.TASK3_COMPLETE_INDEX,
-                markdown=output_const.TASK3_COMPLETE_MARKDOWN,
-            )
+            cloudfront_web_acl_id = cloudfront_distribution_response['Distribution']['DistributionConfig']['WebACLId']
 
-            # Award final points
-            quests_api_client.post_score_event(
-                team_id=team_data["team-id"],
-                quest_id=QUEST_ID,
-                description=scoring_const.KEY_ROTATED_DESC,
-                points=scoring_const.KEY_ROTATED_POINTS
-            )
+            # print(f"CloudFront result for team {team_data['team-id']}: {logging_flag}")
+
+            # Complete task if WebACL was attached
+            if cloudfront_web_acl_id == web_acl_arn:
+
+                # Switch flag
+                team_data['is-cloudfront-waf-attached'] = True
+
+                # Delete hint
+                response = quests_api_client.delete_hint(
+                    team_id=team_data['team-id'],
+                    quest_id=QUEST_ID,
+                    hint_key=hint_const.TASK2_HINT1_KEY,
+                    detail=True
+                )
+                # Handling a response status code other than 200. In this case, we are just logging
+                if response['statusCode'] != 200:
+                    print(response)
+
+                # Post task final message
+                quests_api_client.post_output(
+                    team_id=team_data['team-id'],
+                    quest_id=QUEST_ID,
+                    key=output_const.TASK2A_COMPLETE_KEY,
+                    label=output_const.TASK2A_COMPLETE_LABEL,
+                    value=output_const.TASK2A_COMPLETE_VALUE,
+                    dashboard_index=output_const.TASK2A_COMPLETE_INDEX,
+                    markdown=output_const.TASK2A_COMPLETE_MARKDOWN,
+                )
+
+                # Award final points
+                quests_api_client.post_score_event(
+                    team_id=team_data["team-id"],
+                    quest_id=QUEST_ID,
+                    description=scoring_const.TASK2_COMPLETE_DESC,
+                    points=scoring_const.TASK2_COMPLETE_POINTS
+                )
+
+            else:
+                print(f"No matching CloudTrail events found for team {team_data['team-id']}")
 
     return team_data
+# def evaluate_access_key(quests_api_client, team_data):
+
+#     # Check whether the team has accepted the challenge and task has not been completed yet
+#     if team_data['credentials-task-started'] and not team_data['is-accesskey-rotated']:
+
+#         # Establish cross-account session
+#         print(f"Assuming Ops role for team {team_data['team-id']}")
+#         xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
+    
+#         # Check user's access key
+#         iam_client = xa_session.client('iam')
+#         keys = iam_client.list_access_keys(UserName='ReferenceDeveloper')
+#         status = "Not found"
+#         for key in keys['AccessKeyMetadata']:
+#             if (key['AccessKeyId'] == team_data['accesskey-value']):
+#                 status = key['Status']
+#                 print(f"Access key exists, checking if its active")
+#                 break
+    
+#         if status == "Active":
+#             print(f"access key has not been deactivated")
+
+#             # Detract points
+#             quests_api_client.post_score_event(
+#                 team_id=team_data["team-id"],
+#                 quest_id=QUEST_ID,
+#                 description=scoring_const.KEY_NOT_ROTATED_DESC,
+#                 points=scoring_const.KEY_NOT_ROTATED_POINTS
+#             )
+        
+#         elif status == "Inactive" or status == "Not found":
+                    
+#             print(f"Awarding points. Key has been deactivated or deleted")
+
+#             # Switch flag
+#             team_data['is-accesskey-rotated'] = True
+
+#             # Delete hint
+#             response = quests_api_client.delete_hint(
+#                 team_id=team_data['team-id'],
+#                 quest_id=QUEST_ID,
+#                 hint_key=hint_const.TASK3_HINT1_KEY,
+#                 detail=True
+#             )
+#             # Handling a response status code other than 200. In this case, we are just logging
+#             if response['statusCode'] != 200:
+#                 print(response)
+
+#             # Post task final message
+#             quests_api_client.post_output(
+#                 team_id=team_data['team-id'],
+#                 quest_id=QUEST_ID,
+#                 key=output_const.TASK3_COMPLETE_KEY,
+#                 label=output_const.TASK3_COMPLETE_LABEL,
+#                 value=output_const.TASK3_COMPLETE_VALUE,
+#                 dashboard_index=output_const.TASK3_COMPLETE_INDEX,
+#                 markdown=output_const.TASK3_COMPLETE_MARKDOWN,
+#             )
+
+#             # Award final points
+#             quests_api_client.post_score_event(
+#                 team_id=team_data["team-id"],
+#                 quest_id=QUEST_ID,
+#                 description=scoring_const.KEY_ROTATED_DESC,
+#                 points=scoring_const.KEY_ROTATED_POINTS
+#             )
+
+#     return team_data
 
 
 # Task 4 - The ultimate answer
@@ -417,8 +533,10 @@ def evaluate_final_answer(quests_api_client, team_data):
 
     # Enable this task as soon as the team completed all the other tasks
     if (team_data['is-attach-cloudfront-origin-done']           # Task 1
-        and team_data['is-cloudfront-logs-enabled']         # Task 2
-        and team_data['is-accesskey-rotated']           # Task 3
+        and team_data['is-cloudfront-logs-enabled']         # Task 2a
+        and team_data['is-answer-to-ip-address-correct']    # Task 2b
+        and team_data['is-cloudfront-ip-set-created']       # Task 2c
+        and team_data['is-cloudfront-waf-attached']         # Task 2c
         and not team_data['is-final-task-enabled']):    # Task 4 (this task not yet enabled)
 
         # Switch flag
@@ -450,9 +568,11 @@ def evaluate_final_answer(quests_api_client, team_data):
 def check_and_complete_quest(quests_api_client, quest_id, team_data):
 
     # Check if everything is done
-    if (team_data['is-attach-cloudfront-origin-done']           # Task 1
-        and team_data['is-cloudfront-logs-enabled']         # Task 2
-        and team_data['is-accesskey-rotated']           # Task 3
+    if (team_data['is-attach-cloudfront-origin-done']       # Task 1
+        and team_data['is-cloudfront-logs-enabled']         # Task 2a
+        and team_data['is-answer-to-ip-address-correct']    # Task 2b
+        and team_data['is-cloudfront-ip-set-created']       # Task 2c
+        and team_data['is-cloudfront-waf-attached']         # Task 2c
         and team_data['is-answer-to-life-correct']):    # Task 4
 
         # Award quest complete points
