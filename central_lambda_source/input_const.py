@@ -1,11 +1,11 @@
 # Copyright 2022 Amazon.com and its affiliates; all rights reserved. 
 # This file is Amazon Web Services Content and may not be duplicated or distributed without permission.
 
-# TASK 1 - Web app endpoint
-TASK1_ENDPOINT_KEY='task1_endpoint'
-TASK1_ENDPOINT_INDEX=11
-TASK1_ENDPOINT_LABEL="What is the IP address of the EC2 instance?"
-TASK1_ENDPOINT_DESCRIPTION="i.e. 3.231.162.69"
+# TASK 2b - Malicious IP Address
+TASK2B_ENDPOINT_KEY='task1_ipAddress'
+TASK2B_ENDPOINT_INDEX=11
+TASK2B_ENDPOINT_LABEL="What is the IP address the attack is coming from?"
+TASK2B_ENDPOINT_DESCRIPTION="i.e. 3.231.162.69"
 
 
 # TASK 3 - Readiness check

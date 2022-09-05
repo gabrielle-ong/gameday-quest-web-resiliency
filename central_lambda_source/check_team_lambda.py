@@ -53,7 +53,7 @@ def lambda_handler(event, context):
     team_data = attach_cloudfront_origin(quests_api_client, team_data)
     
     # Task 2 evaluation
-    team_data = evaluate_cloudshell(quests_api_client, team_data)
+    team_data = evaluate_cloudfront_logging(quests_api_client, team_data)
 
     # Task 3 evaluation
     team_data = evaluate_access_key(quests_api_client, team_data)
@@ -71,9 +71,9 @@ def lambda_handler(event, context):
         dynamodb_utils.save_team_data(team_data, quest_team_status_table)
 
 
-# Task 1 evaluation - CloudFront
+# Task 1 evaluation - CloudFront Distribution Origin
 def attach_cloudfront_origin(quests_api_client, team_data):
-    print(f"Evaluating cloudfront task for team {team_data['team-id']}")
+    print(f"Evaluating CloudFront Distribution Origin for team {team_data['team-id']}")
 
     # Check whether task was completed already
     if not team_data['is-attach-cloudfront-origin-done']:
@@ -277,36 +277,32 @@ def check_webapp(team_data):
         return False
 
 
-# Task 2 evaluation - CloudShell
-def evaluate_cloudshell(quests_api_client, team_data):
-    print(f"Evaluating CloudShell task for team {team_data['team-id']}")
+# Task 2a evaluation - CloudFront logs
+def evaluate_cloudfront_logging(quests_api_client, team_data):
+    print(f"Evaluating CloudFront Logs task for team {team_data['team-id']}")
 
     # Check whether task was completed already
-    if not team_data['is-cloudshell-launched']:
+    if not team_data['is-cloudfront-logs-enabled']:
 
         # Establish cross-account session
         print(f"Assuming Ops role for team {team_data['team-id']}")
         xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
 
-        # Lookup CloudShell events in CloudTrail
-        cloudtrail_client = xa_session.client('cloudtrail')
+        # Lookup events in CloudFront
+        cloudfront_client = xa_session.client('cloudfront')
         quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
-        cloudtrail_response = cloudtrail_client.lookup_events(
-            LookupAttributes=[
-                {
-                    'AttributeKey': 'EventName',
-                    'AttributeValue': 'CreateSession'
-                }
-            ],
-            StartTime=quest_start
-        )
-        print(f"CloudTrail lookup result for team {team_data['team-id']}: {cloudtrail_response}")
+        cloudfront_response = cloudfront_client.list_distributions()
+        distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
+        cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
+        logging_flag = cloudfront_distribution_response['Distribution']['DistributionConfig']['Logging']['Enabled']
+
+        print(f"CloudFront result for team {team_data['team-id']}: {logging_flag}")
 
         # Complete task if CloudShell was launched
-        if len(cloudtrail_response['Events']) > 0:
+        if logging_flag:
 
             # Switch flag
-            team_data['is-cloudshell-launched'] = True
+            team_data['is-cloudfront-logs-enabled'] = True
 
             # Delete hint
             response = quests_api_client.delete_hint(
@@ -323,11 +319,11 @@ def evaluate_cloudshell(quests_api_client, team_data):
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                key=output_const.TASK2_COMPLETE_KEY,
-                label=output_const.TASK2_COMPLETE_LABEL,
-                value=output_const.TASK2_COMPLETE_VALUE,
-                dashboard_index=output_const.TASK2_COMPLETE_INDEX,
-                markdown=output_const.TASK2_COMPLETE_MARKDOWN,
+                key=output_const.TASK2A_COMPLETE_KEY,
+                label=output_const.TASK2A_COMPLETE_LABEL,
+                value=output_const.TASK2A_COMPLETE_VALUE,
+                dashboard_index=output_const.TASK2A_COMPLETE_INDEX,
+                markdown=output_const.TASK2A_COMPLETE_MARKDOWN,
             )
 
             # Award final points
@@ -421,7 +417,7 @@ def evaluate_final_answer(quests_api_client, team_data):
 
     # Enable this task as soon as the team completed all the other tasks
     if (team_data['is-attach-cloudfront-origin-done']           # Task 1
-        and team_data['is-cloudshell-launched']         # Task 2
+        and team_data['is-cloudfront-logs-enabled']         # Task 2
         and team_data['is-accesskey-rotated']           # Task 3
         and not team_data['is-final-task-enabled']):    # Task 4 (this task not yet enabled)
 
@@ -455,7 +451,7 @@ def check_and_complete_quest(quests_api_client, quest_id, team_data):
 
     # Check if everything is done
     if (team_data['is-attach-cloudfront-origin-done']           # Task 1
-        and team_data['is-cloudshell-launched']         # Task 2
+        and team_data['is-cloudfront-logs-enabled']         # Task 2
         and team_data['is-accesskey-rotated']           # Task 3
         and team_data['is-answer-to-life-correct']):    # Task 4
 

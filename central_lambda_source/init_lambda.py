@@ -54,9 +54,8 @@ def lambda_handler(event, context):
             'ip-address': ip_address,
             'security-group': security_group,
             'is-ip-address': False,
-            'is-monitoring-chaos-started': False,
             'is-attach-cloudfront-origin-done': False,
-            'is-cloudshell-launched': False,
+            'is-cloudfront-logs-enabled': False,
             'accesskey-value': accesskey_value,
             'is-accesskey-rotated': False,
             'credentials-task-started': False,
@@ -102,14 +101,14 @@ def lambda_handler(event, context):
         markdown=output_const.TASK2A_MARKDOWN,
     )
 
-    quests_api_client.post_input(
-        team_id=team_data['team-id'],
-        quest_id=QUEST_ID,
-        key=input_const.TASK1_ENDPOINT_KEY,
-        label=input_const.TASK1_ENDPOINT_LABEL,
-        description=input_const.TASK1_ENDPOINT_DESCRIPTION,
-        dashboard_index=input_const.TASK1_ENDPOINT_INDEX
-    )
+    # quests_api_client.post_input(
+    #     team_id=team_data['team-id'],
+    #     quest_id=QUEST_ID,
+    #     key=input_const.TASK1_ENDPOINT_KEY,
+    #     label=input_const.TASK1_ENDPOINT_LABEL,
+    #     description=input_const.TASK1_ENDPOINT_DESCRIPTION,
+    #     dashboard_index=input_const.TASK1_ENDPOINT_INDEX
+    # )
 
     # Post task 2a hint
     quests_api_client.post_hint(
@@ -137,9 +136,10 @@ def lambda_handler(event, context):
     quests_api_client.post_input(
         team_id=team_data['team-id'],
         quest_id=QUEST_ID,
-        key=input_const.TASK3_READY_KEY,
-        label=input_const.TASK3_READY_LABEL,
-        dashboard_index=input_const.TASK3_READY_INDEX
+        key=input_const.TASK2B_ENDPOINT_KEY,
+        label=input_const.TASK2B_ENDPOINT_LABEL,
+        description=input_const.TASK2B_ENDPOINT_DESCRIPTION,
+        dashboard_index=input_const.TASK2B_ENDPOINT_INDEX
     )
 
     # Post task 2b hint
