@@ -3,7 +3,7 @@
 
 # TASK 2b - Malicious IP Address
 TASK2B_ENDPOINT_KEY='task2b_ipAddress'
-TASK2B_ENDPOINT_INDEX=11
+TASK2B_ENDPOINT_INDEX=31
 TASK2B_ENDPOINT_LABEL="What is the IP address the attack is coming from?"
 TASK2B_ENDPOINT_DESCRIPTION="i.e. 3.231.162.69"
 
