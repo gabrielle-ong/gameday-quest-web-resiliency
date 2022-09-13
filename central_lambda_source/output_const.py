@@ -38,34 +38,34 @@ As a reminder, please work in the AWS {} region.
 TASK1_INDEX=10
 TASK1_MARKDOWN=True
 
-TASK1_IP_ADDRESS_WRONG_KEY="task1_wrong_ip_address"
-TASK1_IP_ADDRESS_WRONG_LABEL="That's not quite right!"
-TASK1_IP_ADDRESS_WRONG_VALUE="Not sure where you got that IP address from, but that's not correct."
-TASK1_IP_ADDRESS_WRONG_INDEX=14
-TASK1_IP_ADDRESS_WRONG_MARKDOWN=True
+TASK1_WRONG_ORIGIN_KEY="task1_wrong_origin"
+TASK1_WRONG_ORIGIN_LABEL="That's not quite right!"
+TASK1_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
+TASK1_WRONG_ORIGIN_INDEX=14
+TASK1_WRONG_ORIGIN_MARKDOWN=True
 
 
-TASK1_IP_ADDRESS_CORRECT_KEY="task1_correct_ip_address"
-TASK1_IP_ADDRESS_CORRECT_LABEL="What is the IP address of the EC2 instance?"
-TASK1_IP_ADDRESS_CORRECT_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
-TASK1_IP_ADDRESS_CORRECT_INDEX=15
-TASK1_IP_ADDRESS_CORRECT_MARKDOWN=True
+TASK1_CORRECT_ORIGIN_KEY="task1_correct_origin"
+TASK1_CORRECT_ORIGIN_LABEL="Have you updated the origin?"
+TASK1_CORRECT_ORIGIN_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
+TASK1_CORRECT_ORIGIN_INDEX=15
+TASK1_CORRECT_ORIGIN_MARKDOWN=True
 
 
-TASK1_WEBAPP_DOWN_KEY="task1_webapp_down"
-TASK1_WEBAPP_DOWN_LABEL="Something’s wrong!"
-TASK1_WEBAPP_DOWN_VALUE="""
-The monitoring app is reporting that the website is down. Were you responsible, or is a bug crawling inside our server?
-Regardless, this proves that our monitoring tool actually works. We still need you to fix the website immediately.
-"""
-TASK1_WEBAPP_DOWN_INDEX=16
-TASK1_WEBAPP_DOWN_MARKDOWN=True
+# TASK1_WEBAPP_DOWN_KEY="task1_webapp_down"
+# TASK1_WEBAPP_DOWN_LABEL="Something’s wrong!"
+# TASK1_WEBAPP_DOWN_VALUE="""
+# The monitoring app is reporting that the website is down. Were you responsible, or is a bug crawling inside our server?
+# Regardless, this proves that our monitoring tool actually works. We still need you to fix the website immediately.
+# """
+# TASK1_WEBAPP_DOWN_INDEX=16
+# TASK1_WEBAPP_DOWN_MARKDOWN=True
 
 
 TASK1_COMPLETE_KEY="task1_complete"
-TASK1_COMPLETE_LABEL="Monitor tool check: Passed!"
+TASK1_COMPLETE_LABEL="CloudFront origin attachment: Passed!"
 TASK1_COMPLETE_VALUE="""
-All done testing the monitoring tool. Thank you for your help.
+All done. Thank you for your help.
 """
 TASK1_COMPLETE_INDEX=19
 TASK1_COMPLETE_MARKDOWN=True
@@ -86,7 +86,7 @@ TASK2A_MARKDOWN=True
 TASK2A_COMPLETE_KEY="task2a_complete"
 TASK2A_COMPLETE_LABEL="Enable logs: Passed!"
 TASK2A_COMPLETE_VALUE="""
-All done. Great job launching CloudShell. Did you get to try any cURL commands?
+All done. Great job enabling logs.
 """
 TASK2A_COMPLETE_INDEX=29
 TASK2A_COMPLETE_MARKDOWN=True

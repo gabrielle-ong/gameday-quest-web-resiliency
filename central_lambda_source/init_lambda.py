@@ -91,6 +91,19 @@ def lambda_handler(event, context):
         markdown=output_const.TASK1_MARKDOWN,
     )
 
+    # Post task 1 hint
+    quests_api_client.post_hint(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        hint_key=hint_const.TASK1_HINT1_KEY,
+        label=hint_const.TASK1_HINT1_LABEL,
+        description=hint_const.TASK1_HINT1_DESCRIPTION,
+        value=hint_const.TASK1_HINT1_VALUE,
+        dashboard_index=hint_const.TASK1_HINT1_INDEX,
+        cost=hint_const.TASK1_HINT1_COST,
+        status=hint_const.STATUS_OFFERED
+    )
+
     # Post task 2a instructions
     image_url = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}curl.jpeg",signed_duration=86400)
 
@@ -117,12 +130,12 @@ def lambda_handler(event, context):
     quests_api_client.post_hint(
         team_id=team_data['team-id'],
         quest_id=QUEST_ID,
-        hint_key=hint_const.TASK2_HINT1_KEY,
-        label=hint_const.TASK2_HINT1_LABEL,
-        description=hint_const.TASK2_HINT1_DESCRIPTION,
-        value=hint_const.TASK2_HINT1_VALUE,
-        dashboard_index=hint_const.TASK2_HINT1_INDEX,
-        cost=hint_const.TASK2_HINT1_COST,
+        hint_key=hint_const.TASK2A_HINT1_KEY,
+        label=hint_const.TASK2A_HINT1_LABEL,
+        description=hint_const.TASK2A_HINT1_DESCRIPTION,
+        value=hint_const.TASK2A_HINT1_VALUE,
+        dashboard_index=hint_const.TASK2A_HINT1_INDEX,
+        cost=hint_const.TASK2A_HINT1_COST,
         status=hint_const.STATUS_OFFERED
     )
 
@@ -168,13 +181,13 @@ def lambda_handler(event, context):
         dashboard_index=output_const.TASK2C_INDEX,
         markdown=output_const.TASK2C_MARKDOWN,
     )
-    quests_api_client.post_input(
-        team_id=team_data['team-id'],
-        quest_id=QUEST_ID,
-        key=input_const.TASK3_READY_KEY,
-        label=input_const.TASK3_READY_LABEL,
-        dashboard_index=input_const.TASK3_READY_INDEX
-    )
+    # quests_api_client.post_input(
+    #     team_id=team_data['team-id'],
+    #     quest_id=QUEST_ID,
+    #     key=input_const.TASK3_READY_KEY,
+    #     label=input_const.TASK3_READY_LABEL,
+    #     dashboard_index=input_const.TASK3_READY_INDEX
+    # )
 
     # Post task 2c hint
     quests_api_client.post_hint(
