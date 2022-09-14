@@ -36,7 +36,7 @@ TASK2B_HINT1_KEY="task2b_hint1"
 TASK2B_HINT1_LABEL="Having difficulty identifying where the attack is coming from?"
 TASK2B_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
 TASK2B_HINT1_VALUE="Look at what the source IP address is."
-TASK2B_HINT1_INDEX=37
+TASK2B_HINT1_INDEX=38
 TASK2B_HINT1_COST=200
 
 # TASK 2c HINTS
@@ -44,16 +44,16 @@ TASK2C_HINT1_KEY="task2c_hint1"
 TASK2C_HINT1_LABEL="Having difficulty putting up a firewall?"
 TASK2C_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
 TASK2C_HINT1_VALUE="Ensure that you have IPSets and WAF rule created which would be used to tag to the CloudFront distribution."
-TASK2C_HINT1_INDEX=47
+TASK2C_HINT1_INDEX=46
 TASK2C_HINT1_COST=200
 
 
 # TASK 3 HINTS
 TASK3_HINT1_KEY="task3_hint1"
-TASK3_HINT1_LABEL="Having difficulty identifying the right metric"
+TASK3_HINT1_LABEL="Having difficulty identifying the right metric?"
 TASK3_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
 TASK3_HINT1_VALUE="""
 Look at CloudWatch logs and identify the appropriate metric.
 """
-TASK3_HINT1_INDEX=57
+TASK3_HINT1_INDEX=60
 TASK3_HINT1_COST=200

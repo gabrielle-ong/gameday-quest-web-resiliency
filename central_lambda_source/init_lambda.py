@@ -212,13 +212,15 @@ def lambda_handler(event, context):
         dashboard_index=output_const.TASK3_INDEX,
         markdown=output_const.TASK3_MARKDOWN,
     )
-    quests_api_client.post_input(
-        team_id=team_data['team-id'],
-        quest_id=QUEST_ID,
-        key=input_const.TASK3_READY_KEY,
-        label=input_const.TASK3_READY_LABEL,
-        dashboard_index=input_const.TASK3_READY_INDEX
-    )
+
+    # quests_api_client.post_input(
+    #     team_id=team_data['team-id'],
+    #     quest_id=QUEST_ID,
+    #     key=input_const.TASK3_METRIC_KEY,
+    #     label=input_const.TASK3_METRIC_LABEL,
+    #     description=input_const.TASK3_METRIC_DESCRIPTION,
+    #     dashboard_index=input_const.TASK3_METRIC_INDEX
+    # )
 
     # Post task 3 hint
     quests_api_client.post_hint(

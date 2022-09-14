@@ -119,7 +119,7 @@ TASK2B_COMPLETE_LABEL="IP Address: Passed!"
 TASK2B_COMPLETE_VALUE="""
 All done. Great job neutralizing the compromised access key.
 """
-TASK2B_COMPLETE_INDEX=39
+TASK2B_COMPLETE_INDEX=40
 TASK2B_COMPLETE_MARKDOWN=True
 
 # TASK 2C - Firewall
@@ -130,7 +130,7 @@ The last phrase is “someday, by building walls I will RULE the world!!”.
 There seems to be something weird going on with Siu.
 
 """
-TASK2C_INDEX=30
+TASK2C_INDEX=41
 TASK2C_MARKDOWN=True
 
 
@@ -140,7 +140,7 @@ TASK2C_STARTED_VALUE="""
 As we anticipated, the previous employee has already started doing some damage in the account. Please locate the user 
 “ReferenceDeveloper” and rotate its access keys. The longer it will take you, the more points you will lose, but no pressure.
 """
-TASK2C_STARTED_INDEX=35
+TASK2C_STARTED_INDEX=43
 TASK2C_STARTED_MARKDOWN=True
 
 
@@ -149,7 +149,7 @@ TASK2C_COMPLETE_LABEL="Firewall rule: Passed!"
 TASK2C_COMPLETE_VALUE="""
 All done. Great job neutralizing the compromised access key.
 """
-TASK2C_COMPLETE_INDEX=39
+TASK2C_COMPLETE_INDEX=49
 TASK2C_COMPLETE_MARKDOWN=True
 
 
@@ -165,21 +165,21 @@ You now have to pick the right metric and set up some kind of alarm to identify 
 Siu’s last words were “I only wanted... to WATCH... the CLOUDs go by...”
 
 """
-TASK3_INDEX=40
+TASK3_INDEX=50
 TASK3_MARKDOWN=True
 
 
 TASK3_WRONG_KEY="task3_wrong_answer"
 TASK3_WRONG_LABEL="You don't know THE answer, do you?"
 TASK3_WRONG_VALUE="Our CEO will be very disappointed"
-TASK3_WRONG_INDEX=42
+TASK3_WRONG_INDEX=58
 TASK3_WRONG_MARKDOWN=True
 
 
 TASK3_CORRECT_KEY="task3_correct_answer"
 TASK3_CORRECT_LABEL="What is “THE” answer to life, the universe, everything?"
 TASK3_CORRECT_VALUE="That's right! 42 is THE answer."
-TASK3_CORRECT_INDEX=43
+TASK3_CORRECT_INDEX=62
 TASK3_CORRECT_MARKDOWN=True
 
 
