@@ -51,7 +51,7 @@ aws s3 cp ${QUEST_ARTIFACTS_ZIP} s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_B
 
 echo -e "\nUploading additional Quest artifacts to S3"
 cd ${QUEST_ROOT_DIR}
-aws s3 cp artifacts/images/curl.jpeg s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/curl.jpeg ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/sample_log.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/sample_log.png ${PROFILE_ARGUMENT}
   
 
 

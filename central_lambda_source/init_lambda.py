@@ -140,12 +140,14 @@ def lambda_handler(event, context):
     )
 
     # Post task 2b instructions
+    image_url = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}sample_log.png",signed_duration=86400)
+
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
         key=output_const.TASK2B_KEY,
         label=output_const.TASK2B_LABEL,
-        value=output_const.TASK2B_VALUE,
+        value=output_const.TASK2B_VALUE.format(image_url),
         dashboard_index=output_const.TASK2B_INDEX,
         markdown=output_const.TASK2B_MARKDOWN,
     )

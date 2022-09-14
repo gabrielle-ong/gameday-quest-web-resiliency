@@ -97,8 +97,8 @@ TASK2B_LABEL="Find the needle in the ocean"
 TASK2B_VALUE="""
 With logging enabled, now the logs will come through to Simple Storage Service (S3). 
 It’ll take some time to come through, but Siu says its overdue! Here is a log file to save you. 
-Where is the attack coming from?
 
+![Sample log]({})
 """
 TASK2B_INDEX=30
 TASK2B_MARKDOWN=True
