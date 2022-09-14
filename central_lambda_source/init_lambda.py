@@ -164,12 +164,12 @@ def lambda_handler(event, context):
     quests_api_client.post_hint(
         team_id=team_data['team-id'],
         quest_id=QUEST_ID,
-        hint_key=hint_const.TASK3_HINT1_KEY,
-        label=hint_const.TASK3_HINT1_LABEL,
-        description=hint_const.TASK3_HINT1_DESCRIPTION,
-        value=hint_const.TASK3_HINT1_VALUE,
-        dashboard_index=hint_const.TASK3_HINT1_INDEX,
-        cost=hint_const.TASK3_HINT1_COST,
+        hint_key=hint_const.TASK2B_HINT1_KEY,
+        label=hint_const.TASK2B_HINT1_LABEL,
+        description=hint_const.TASK2B_HINT1_DESCRIPTION,
+        value=hint_const.TASK2B_HINT1_VALUE,
+        dashboard_index=hint_const.TASK2B_HINT1_INDEX,
+        cost=hint_const.TASK2B_HINT1_COST,
         status=hint_const.STATUS_OFFERED
     )
 
@@ -195,12 +195,12 @@ def lambda_handler(event, context):
     quests_api_client.post_hint(
         team_id=team_data['team-id'],
         quest_id=QUEST_ID,
-        hint_key=hint_const.TASK3_HINT1_KEY,
-        label=hint_const.TASK3_HINT1_LABEL,
-        description=hint_const.TASK3_HINT1_DESCRIPTION,
-        value=hint_const.TASK3_HINT1_VALUE,
-        dashboard_index=hint_const.TASK3_HINT1_INDEX,
-        cost=hint_const.TASK3_HINT1_COST,
+        hint_key=hint_const.TASK2C_HINT1_KEY,
+        label=hint_const.TASK2C_HINT1_LABEL,
+        description=hint_const.TASK2C_HINT1_DESCRIPTION,
+        value=hint_const.TASK2C_HINT1_VALUE,
+        dashboard_index=hint_const.TASK2C_HINT1_INDEX,
+        cost=hint_const.TASK2C_HINT1_COST,
         status=hint_const.STATUS_OFFERED
     )
 
