@@ -533,3 +533,15 @@ Outputs:
           ]
         }
       ]
+
+  ElasticLoadBalancerDNSname:
+    Description: DNS name of this load balancer.
+    Value: !GetAtt ElasticLoadBalancer.DNSName
+
+  CloudFrontID:
+    Description: CloudFront ID
+    Value: !GetAtt CloudFrontDistribution.Id
+  
+  WAFWebACLID:
+    Description: WAF Web ACL ID
+    Value: !GetAtt WebApplicationFirewall.Id
