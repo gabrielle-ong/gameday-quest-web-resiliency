@@ -49,19 +49,23 @@ def lambda_handler(event, context):
     # Make a copy of the original array to be able later on to do a comparison and validate whether a DynamoDB update is needed    
     team_data = dynamodb_response['Item'].copy() # Check init_lambda for the format
 
-    # Task 1 evaluation
+    # Task 1 is check cloudfront origin
+
+    # Task 2 evaluation
     team_data = attach_cloudfront_origin(quests_api_client, team_data)
     
-    # Task 2a evaluation
+    # Task 3 evaluation
     team_data = evaluate_cloudfront_logging(quests_api_client, team_data)
 
-    # Task 2c evaluation
+    # Task 4 is Find needle in ocean
+
+    # Task 5 evaluation
     team_data = evaluate_cloudfront_waf(quests_api_client, team_data)
 
-    # # Task 3 evaluation
+    # # Task 5 evaluation
     # team_data = evaluate_access_key(quests_api_client, team_data)
 
-    # Task 4 evaluation
+    # Task 6 evaluation
     team_data = evaluate_final_answer(quests_api_client, team_data)
 
     # Complete quest if everything is done
@@ -74,7 +78,7 @@ def lambda_handler(event, context):
         dynamodb_utils.save_team_data(team_data, quest_team_status_table)
 
 
-# Task 1 evaluation - CloudFront Distribution Origin
+# Task 2 evaluation - CloudFront Distribution Origin
 def attach_cloudfront_origin(quests_api_client, team_data):
     print(f"Evaluating CloudFront Distribution Origin for team {team_data['team-id']}")
 
@@ -113,19 +117,19 @@ def attach_cloudfront_origin(quests_api_client, team_data):
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                key=output_const.TASK1_COMPLETE_KEY,
-                label=output_const.TASK1_COMPLETE_LABEL,
-                value=output_const.TASK1_COMPLETE_VALUE,
-                dashboard_index=output_const.TASK1_COMPLETE_INDEX,
-                markdown=output_const.TASK1_COMPLETE_MARKDOWN,
+                key=output_const.TASK2_COMPLETE_KEY,
+                label=output_const.TASK2_COMPLETE_LABEL,
+                value=output_const.TASK2_COMPLETE_VALUE,
+                dashboard_index=output_const.TASK2_COMPLETE_INDEX,
+                markdown=output_const.TASK2_COMPLETE_MARKDOWN,
             )
 
             # Award final points
             quests_api_client.post_score_event(
                 team_id=team_data["team-id"],
                 quest_id=QUEST_ID,
-                description=scoring_const.TASK1_COMPLETE_DESC,
-                points=scoring_const.TASK1_COMPLETE_POINTS
+                description=scoring_const.TASK2_COMPLETE_DESC,
+                points=scoring_const.TASK2_COMPLETE_POINTS
             )
 
         else:
@@ -280,7 +284,7 @@ def check_webapp(team_data):
         return False
 
 
-# Task 2a evaluation - CloudFront logs
+# Task 3 evaluation - CloudFront logs
 def evaluate_cloudfront_logging(quests_api_client, team_data):
     print(f"Evaluating CloudFront Logs task for team {team_data['team-id']}")
 
@@ -322,11 +326,11 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                key=output_const.TASK2A_COMPLETE_KEY,
-                label=output_const.TASK2A_COMPLETE_LABEL,
-                value=output_const.TASK2A_COMPLETE_VALUE,
-                dashboard_index=output_const.TASK2A_COMPLETE_INDEX,
-                markdown=output_const.TASK2A_COMPLETE_MARKDOWN,
+                key=output_const.TASK3_COMPLETE_KEY,
+                label=output_const.TASK3_COMPLETE_LABEL,
+                value=output_const.TASK3_COMPLETE_VALUE,
+                dashboard_index=output_const.TASK3_COMPLETE_INDEX,
+                markdown=output_const.TASK3_COMPLETE_MARKDOWN,
             )
 
             # Award final points
@@ -343,7 +347,7 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
     return team_data
 
 
-# Task 2c - WAF Rule
+# Task 5 - WAF Rule
 # 'is-cloudfront-ip-set-created'
 # 'is-cloudfront-waf-attached'
 def evaluate_cloudfront_waf(quests_api_client, team_data):
@@ -427,7 +431,7 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                 response = quests_api_client.delete_hint(
                     team_id=team_data['team-id'],
                     quest_id=QUEST_ID,
-                    hint_key=hint_const.TASK2_HINT1_KEY,
+                    hint_key=hint_const.TASK5_HINT1_KEY,
                     detail=True
                 )
                 # Handling a response status code other than 200. In this case, we are just logging
@@ -438,11 +442,11 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                 quests_api_client.post_output(
                     team_id=team_data['team-id'],
                     quest_id=QUEST_ID,
-                    key=output_const.TASK2A_COMPLETE_KEY,
-                    label=output_const.TASK2A_COMPLETE_LABEL,
-                    value=output_const.TASK2A_COMPLETE_VALUE,
-                    dashboard_index=output_const.TASK2A_COMPLETE_INDEX,
-                    markdown=output_const.TASK2A_COMPLETE_MARKDOWN,
+                    key=output_const.TASK5_COMPLETE_KEY,
+                    label=output_const.TASK5_COMPLETE_LABEL,
+                    value=output_const.TASK5_COMPLETE_VALUE,
+                    dashboard_index=output_const.TASK5_COMPLETE_INDEX,
+                    markdown=output_const.TASK5_COMPLETE_MARKDOWN,
                 )
 
                 # Award final points
@@ -527,7 +531,7 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
 #     return team_data
 
 
-# Task 4 - The ultimate answer
+# Task 7 - The ultimate answer
 # The actual evaluation happens in Update Lambda. Here is the logic to enable the task
 def evaluate_final_answer(quests_api_client, team_data):
 
