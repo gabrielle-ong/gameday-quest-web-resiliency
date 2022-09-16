@@ -1,6 +1,12 @@
 # Copyright 2022 Amazon.com and its affiliates; all rights reserved. 
 # This file is Amazon Web Services Content and may not be duplicated or distributed without permission.
 
+# TASK 1 - CloudFront distribution wrong-origin
+TASK1_ORIGIN_KEY='task1_wrong_origin'
+TASK1_ORIGIN_INDEX=18
+TASK1_ORIGIN_LABEL="What is the origin identified?"
+TASK1_ORIGIN_DESCRIPTION="i.e. www.amazon.com"
+
 # TASK 2b - Malicious IP Address
 TASK2B_ENDPOINT_KEY='task2b_ipAddress'
 TASK2B_ENDPOINT_INDEX=31

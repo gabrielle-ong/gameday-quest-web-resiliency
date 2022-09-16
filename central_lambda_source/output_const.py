@@ -22,11 +22,42 @@ new hires to solve.
 WELCOME_INDEX=1
 WELCOME_MARKDOWN=True
 
-
-# TASK 1 - CloudFront
+# Task 1 - Cloudfront distribution wrong-origin
 TASK1_KEY="task1"
-TASK1_LABEL="Extra layer of protection"
+TASK1_LABEL="What nonsense is CloudFront distribution origin pointing to"
 TASK1_VALUE="""
+<Photo>
+<Description>
+"""
+TASK1_INDEX=13
+TASK1_MARKDOWN=True
+
+TASK1_WRONG_ORIGIN_KEY="task1_wrong_answer"
+TASK1_WRONG_ORIGIN_LABEL="That's not quite right!"
+TASK1_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
+TASK1_WRONG_ORIGIN_INDEX=20
+TASK1_WRONG_ORIGIN_MARKDOWN=True
+
+
+TASK1_CORRECT_ORIGIN_KEY="task1_correct_answer"
+TASK1_CORRECT_ORIGIN_LABEL="What is the origin identified?"
+TASK1_CORRECT_ORIGIN_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
+TASK1_CORRECT_ORIGIN_INDEX=21
+TASK1_CORRECT_ORIGIN_MARKDOWN=True
+
+
+TASK1_COMPLETE_KEY="task1_complete"
+TASK1_COMPLETE_LABEL="Identify distribution origin: Passed!"
+TASK1_COMPLETE_VALUE="""
+All done. Thank you for your help.
+"""
+TASK1_COMPLETE_INDEX=22
+TASK1_COMPLETE_MARKDOWN=True
+
+# TASK 2 - CloudFront distribution change-origin
+TASK2_KEY="task2"
+TASK2_LABEL="Extra layer of protection"
+TASK2_VALUE="""
 *BEEP BOOP* Your first task is here! Siu is freaking out about an extreme influx of requests that may flood and 
 clog up the servers. If only there was a service that could guard against such piercing attacks... 
 When asked which service would perform such a thing, Siu replied cryptically “How to build a good vacuum is to 
@@ -35,40 +66,30 @@ make sure the FRONT vacuum head is connected to the ORIGIN of the suction create
 Make sure the web application running on it is reachable. Then, enter its IP address below. 
 As a reminder, please work in the AWS {} region.
 """
-TASK1_INDEX=10
-TASK1_MARKDOWN=True
+TASK2_INDEX=10
+TASK2_MARKDOWN=True
 
-TASK1_WRONG_ORIGIN_KEY="task1_wrong_origin"
-TASK1_WRONG_ORIGIN_LABEL="That's not quite right!"
-TASK1_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
-TASK1_WRONG_ORIGIN_INDEX=14
-TASK1_WRONG_ORIGIN_MARKDOWN=True
-
-
-TASK1_CORRECT_ORIGIN_KEY="task1_correct_origin"
-TASK1_CORRECT_ORIGIN_LABEL="Have you updated the origin?"
-TASK1_CORRECT_ORIGIN_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
-TASK1_CORRECT_ORIGIN_INDEX=15
-TASK1_CORRECT_ORIGIN_MARKDOWN=True
+TASK2_WRONG_ORIGIN_KEY="task2_wrong_answer"
+TASK2_WRONG_ORIGIN_LABEL="That's not quite right!"
+TASK2_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
+TASK2_WRONG_ORIGIN_INDEX=14
+TASK2_WRONG_ORIGIN_MARKDOWN=True
 
 
-# TASK1_WEBAPP_DOWN_KEY="task1_webapp_down"
-# TASK1_WEBAPP_DOWN_LABEL="Something’s wrong!"
-# TASK1_WEBAPP_DOWN_VALUE="""
-# The monitoring app is reporting that the website is down. Were you responsible, or is a bug crawling inside our server?
-# Regardless, this proves that our monitoring tool actually works. We still need you to fix the website immediately.
-# """
-# TASK1_WEBAPP_DOWN_INDEX=16
-# TASK1_WEBAPP_DOWN_MARKDOWN=True
+TASK2_CORRECT_ORIGIN_KEY="task2_correct_answer"
+TASK2_CORRECT_ORIGIN_LABEL="Have you updated the origin?"
+TASK2_CORRECT_ORIGIN_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
+TASK2_CORRECT_ORIGIN_INDEX=15
+TASK2_CORRECT_ORIGIN_MARKDOWN=True
 
 
-TASK1_COMPLETE_KEY="task1_complete"
-TASK1_COMPLETE_LABEL="CloudFront origin attachment: Passed!"
-TASK1_COMPLETE_VALUE="""
+TASK2_COMPLETE_KEY="task2_complete"
+TASK2_COMPLETE_LABEL="CloudFront origin attachment: Passed!"
+TASK2_COMPLETE_VALUE="""
 All done. Thank you for your help.
 """
-TASK1_COMPLETE_INDEX=19
-TASK1_COMPLETE_MARKDOWN=True
+TASK2_COMPLETE_INDEX=19
+TASK2_COMPLETE_MARKDOWN=True
 
 
 # TASK 2A - Logs

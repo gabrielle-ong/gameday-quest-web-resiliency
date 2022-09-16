@@ -80,7 +80,40 @@ def lambda_handler(event, context):
         markdown=output_const.WELCOME_MARKDOWN,
     )
 
-    # Post task 1 instructions
+    # TASK 1
+    quests_api_client.post_output(
+        team_id=team_id,
+        quest_id=QUEST_ID,
+        key=output_const.TASK1_KEY,
+        label=output_const.TASK1_LABEL,
+        value=output_const.TASK1_VALUE.format(GAMEDAY_REGION),
+        dashboard_index=output_const.TASK1_INDEX,
+        markdown=output_const.TASK1_MARKDOWN,
+    )
+
+    quests_api_client.post_input(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        key=input_const.TASK1_ORIGIN_KEY,
+        label=input_const.TASK1_ORIGIN_LABEL,
+        description=input_const.TASK1_ORIGIN_DESCRIPTION,
+        dashboard_index=input_const.TASK1_ORIGIN_INDEX
+    )
+
+    quests_api_client.post_hint(
+        team_id=team_data['team-id'],
+        quest_id=QUEST_ID,
+        hint_key=hint_const.TASK1_HINT1_KEY,
+        label=hint_const.TASK1_HINT1_LABEL,
+        description=hint_const.TASK1_HINT1_DESCRIPTION,
+        value=hint_const.TASK1_HINT1_VALUE,
+        dashboard_index=hint_const.TASK1_HINT1_INDEX,
+        cost=hint_const.TASK1_HINT1_COST,
+        status=hint_const.STATUS_OFFERED
+    )
+
+
+    # TASK 2
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
