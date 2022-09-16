@@ -3,13 +3,13 @@
 
 # TASK 1 - CloudFront distribution wrong-origin
 TASK1_ORIGIN_KEY='task1_wrong_origin'
-TASK1_ORIGIN_INDEX=18
+TASK1_ORIGIN_INDEX=11
 TASK1_ORIGIN_LABEL="What is the origin identified?"
 TASK1_ORIGIN_DESCRIPTION="i.e. www.amazon.com"
 
 # TASK 4 - Malicious IP Address
 TASK4_ENDPOINT_KEY='task4_ip_address'
-TASK4_ENDPOINT_INDEX=65
+TASK4_ENDPOINT_INDEX=41
 TASK4_ENDPOINT_LABEL="What is the IP address the attack is coming from?"
 TASK4_ENDPOINT_DESCRIPTION="i.e. 3.231.162.69"
 

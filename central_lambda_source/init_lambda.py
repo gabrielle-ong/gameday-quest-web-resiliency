@@ -145,7 +145,7 @@ def lambda_handler(event, context):
         quest_id=QUEST_ID,
         key=output_const.TASK3_KEY,
         label=output_const.TASK3_LABEL,
-        value=output_const.TASK3_VALUE.format(image_url),
+        value=output_const.TASK3_VALUE,
         dashboard_index=output_const.TASK3_INDEX,
         markdown=output_const.TASK3_MARKDOWN,
     )

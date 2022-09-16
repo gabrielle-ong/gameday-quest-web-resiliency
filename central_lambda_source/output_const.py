@@ -29,20 +29,20 @@ TASK1_VALUE="""
 - <Photo>
 - <Description>
 """
-TASK1_INDEX=13
+TASK1_INDEX=10
 TASK1_MARKDOWN=True
 
 TASK1_WRONG_ORIGIN_KEY="task1_wrong_answer"
 TASK1_WRONG_ORIGIN_LABEL="That's not quite right!"
 TASK1_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
-TASK1_WRONG_ORIGIN_INDEX=20
+TASK1_WRONG_ORIGIN_INDEX=14
 TASK1_WRONG_ORIGIN_MARKDOWN=True
 
 
 TASK1_CORRECT_ORIGIN_KEY="task1_correct_answer"
 TASK1_CORRECT_ORIGIN_LABEL="What is the origin identified?"
 TASK1_CORRECT_ORIGIN_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
-TASK1_CORRECT_ORIGIN_INDEX=21
+TASK1_CORRECT_ORIGIN_INDEX=15
 TASK1_CORRECT_ORIGIN_MARKDOWN=True
 
 
@@ -51,7 +51,7 @@ TASK1_COMPLETE_LABEL="Identify distribution origin: Passed!"
 TASK1_COMPLETE_VALUE="""
 All done. Thank you for your help.
 """
-TASK1_COMPLETE_INDEX=25
+TASK1_COMPLETE_INDEX=17
 TASK1_COMPLETE_MARKDOWN=True
 
 # TASK 2 - CloudFront distribution change-origin
@@ -66,20 +66,20 @@ make sure the FRONT vacuum head is connected to the ORIGIN of the suction create
 Make sure the web application running on it is reachable. Then, enter its IP address below. 
 As a reminder, please work in the AWS {} region.
 """
-TASK2_INDEX=30
+TASK2_INDEX=20
 TASK2_MARKDOWN=True
 
 TASK2_WRONG_ORIGIN_KEY="task2_wrong_answer"
 TASK2_WRONG_ORIGIN_LABEL="That's not quite right!"
 TASK2_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
-TASK2_WRONG_ORIGIN_INDEX=38
+TASK2_WRONG_ORIGIN_INDEX=24
 TASK2_WRONG_ORIGIN_MARKDOWN=True
 
 
 TASK2_CORRECT_ORIGIN_KEY="task2_correct_answer"
 TASK2_CORRECT_ORIGIN_LABEL="Have you updated the origin?"
 TASK2_CORRECT_ORIGIN_VALUE="That's right! Thank you for verifying the EC2 instance's IP address: {}"
-TASK2_CORRECT_ORIGIN_INDEX=40
+TASK2_CORRECT_ORIGIN_INDEX=25
 TASK2_CORRECT_ORIGIN_MARKDOWN=True
 
 
@@ -88,7 +88,7 @@ TASK2_COMPLETE_LABEL="CloudFront origin attachment: Passed!"
 TASK2_COMPLETE_VALUE="""
 All done. Thank you for your help.
 """
-TASK2_COMPLETE_INDEX=45
+TASK2_COMPLETE_INDEX=28
 TASK2_COMPLETE_MARKDOWN=True
 
 
@@ -100,7 +100,7 @@ When asked for help, Siu replied with 3 phrases, the first being “This sucks! 
 Hmm, peculiar.
 
 """
-TASK3_INDEX=50
+TASK3_INDEX=30
 TASK3_MARKDOWN=True
 
 
@@ -109,7 +109,7 @@ TASK3_COMPLETE_LABEL="Enable logs: Passed!"
 TASK3_COMPLETE_VALUE="""
 All done. Great job enabling logs.
 """
-TASK3_COMPLETE_INDEX=56
+TASK3_COMPLETE_INDEX=39
 TASK3_COMPLETE_MARKDOWN=True
 
 # TASK 4 - IP Address
@@ -121,18 +121,20 @@ It’ll take some time to come through, but Siu says its overdue! Here is a log 
 
 ![Sample log]({})
 """
-TASK4_INDEX=60
+TASK4_INDEX=40
 TASK4_MARKDOWN=True
 
+TASK4_IP_ADDRESS_WRONG_KEY="task4_wrong_ip_address"
+TASK4_IP_ADDRESS_WRONG_LABEL="That's not quite right!"
+TASK4_IP_ADDRESS_WRONG_VALUE="Not sure where you got that IP address from, but that's not correct."
+TASK4_IP_ADDRESS_WRONG_INDEX=44
+TASK4_IP_ADDRESS_WRONG_MARKDOWN=True
 
-TASK4_STARTED_KEY="task4_started"
-TASK4_STARTED_LABEL="Your move now!"
-TASK4_STARTED_VALUE="""
-As we anticipated, the previous employee has already started doing some damage in the account. Please locate the user 
-“ReferenceDeveloper” and rotate its access keys. The longer it will take you, the more points you will lose, but no pressure.
-"""
-TASK4_STARTED_INDEX=68
-TASK4_STARTED_MARKDOWN=True
+TASK4_IP_ADDRESS_CORRECT_KEY="task4_correct_ip_address"
+TASK4_IP_ADDRESS_CORRECT_LABEL="What is the IP address?"
+TASK4_IP_ADDRESS_CORRECT_VALUE="That's right! Thank you for verifying the IP address."
+TASK4_IP_ADDRESS_CORRECT_INDEX=45
+TASK4_IP_ADDRESS_CORRECT_MARKDOWN=True
 
 
 TASK4_COMPLETE_KEY="task4_complete"
@@ -140,7 +142,7 @@ TASK4_COMPLETE_LABEL="IP Address: Passed!"
 TASK4_COMPLETE_VALUE="""
 All done. Great job neutralizing the compromised access key.
 """
-TASK4_COMPLETE_INDEX=75
+TASK4_COMPLETE_INDEX=49
 TASK4_COMPLETE_MARKDOWN=True
 
 # TASK 5 - Firewall
@@ -150,18 +152,8 @@ TASK5_VALUE="""
 The last phrase is “someday, by building walls I will RULE the world!!”. 
 There seems to be something weird going on with Siu.
 """
-TASK5_INDEX=80
+TASK5_INDEX=50
 TASK5_MARKDOWN=True
-
-
-TASK5_STARTED_KEY="task5_started"
-TASK5_STARTED_LABEL="Your move now!"
-TASK5_STARTED_VALUE="""
-As we anticipated, the previous employee has already started doing some damage in the account. Please locate the user 
-“ReferenceDeveloper” and rotate its access keys. The longer it will take you, the more points you will lose, but no pressure.
-"""
-TASK5_STARTED_INDEX=83
-TASK5_STARTED_MARKDOWN=True
 
 
 TASK5_COMPLETE_KEY="task5_complete"
@@ -169,7 +161,7 @@ TASK5_COMPLETE_LABEL="Firewall rule: Passed!"
 TASK5_COMPLETE_VALUE="""
 All done. Great job neutralizing the compromised access key.
 """
-TASK5_COMPLETE_INDEX=88
+TASK5_COMPLETE_INDEX=59
 TASK5_COMPLETE_MARKDOWN=True
 
 
@@ -184,22 +176,30 @@ You now have to pick the right metric and set up some kind of alarm to identify 
 
 Siu’s last words were “I only wanted... to WATCH... the CLOUDs go by...”
 """
-TASK6_INDEX=90
+TASK6_INDEX=60
 TASK6_MARKDOWN=True
 
+TASK6_COMPLETE_KEY="task6_complete"
+TASK6_COMPLETE_LABEL="CloudWatch alarm: Passed!"
+TASK6_COMPLETE_VALUE="""
+All done. Great job neutralizing the compromised access key.
+"""
+TASK6_COMPLETE_INDEX=69
+TASK6_COMPLETE_MARKDOWN=True
 
-TASK6_WRONG_KEY="task6_wrong_answer"
-TASK6_WRONG_LABEL="You don't know THE answer, do you?"
-TASK6_WRONG_VALUE="Our CEO will be very disappointed"
-TASK6_WRONG_INDEX=97
-TASK6_WRONG_MARKDOWN=True
+
+# TASK6_WRONG_KEY="task6_wrong_answer"
+# TASK6_WRONG_LABEL="You don't know THE answer, do you?"
+# TASK6_WRONG_VALUE="Our CEO will be very disappointed"
+# TASK6_WRONG_INDEX=97
+# TASK6_WRONG_MARKDOWN=True
 
 
-TASK6_CORRECT_KEY="task6_correct_answer"
-TASK6_CORRECT_LABEL="What is “THE” answer to life, the universe, everything?"
-TASK6_CORRECT_VALUE="That's right! 42 is THE answer."
-TASK6_CORRECT_INDEX=99
-TASK6_CORRECT_MARKDOWN=True
+# TASK6_CORRECT_KEY="task6_correct_answer"
+# TASK6_CORRECT_LABEL="What is “THE” answer to life, the universe, everything?"
+# TASK6_CORRECT_VALUE="That's right! 42 is THE answer."
+# TASK6_CORRECT_INDEX=99
+# TASK6_CORRECT_MARKDOWN=True
 
 
 # QUEST COMPLETE
