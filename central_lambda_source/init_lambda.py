@@ -42,24 +42,31 @@ def lambda_handler(event, context):
     team_data = quests_api_client.get_team(team_id=team_id)
 
     # Retrieve CloudFormation stack outputs
-    ip_address = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "EC2IPAddress")
-    security_group = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "SecurityGroup")
-    accesskey_value = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "UserAccessKeyName")
+    # ip_address = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "EC2IPAddress")
+    # security_group = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "SecurityGroup")
+    # accesskey_value = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "UserAccessKeyName")
+    cloudfront_distribution_id = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "CloudFrontID")
+    elb_dns_name = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "ElasticLoadBalancerDNSname")
+    waf_acl_id = cfn_utils.retrieve_team_template_output_value(quests_api_client, QUEST_ID, team_data, "WAFWebACLID")
+
 
     # Populate the QUEST_TEAM_STATUS_TABLE for this team
     dynamo_put_response = quest_team_status_table.put_item(
         Item={
             'team-id': str(team_id),
             'quest-start-time': int(datetime.datetime.now().timestamp()),
-            'ip-address': ip_address,
-            'security-group': security_group,
+            'cloudfront-distribution-id': cloudfront_distribution_id,
+            'elb-dns-name': elb_dns_name,
+            'waf_acl_id': waf_acl_id,
+            # 'ip-address': ip_address,
+            # 'security-group': security_group,
             'is-ip-address': False,
             'is-attach-cloudfront-origin-done': False,
             'is-cloudfront-logs-enabled': False,
             'is-answer-to-ip-address-correct': False,
             'is-cloudfront-ip-set-created': False,
             'is-cloudfront-waf-attached': False,
-            'accesskey-value': accesskey_value,
+            # 'accesskey-value': accesskey_value,
             'is-accesskey-rotated': False,
             'credentials-task-started': False,
             'is-final-task-enabled': False,

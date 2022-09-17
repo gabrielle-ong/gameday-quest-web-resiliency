@@ -97,7 +97,7 @@ def attach_cloudfront_origin(quests_api_client, team_data):
         print(f"CloudFront result for team {team_data['team-id']}: {cloudfront_response}")
 
         # Complete task if CloudFront Origin was attached
-        if origin_domain_name != "www.amazon.com":
+        if origin_domain_name == team_data['elb-dns-name']:
 
             # Switch flag
             team_data['is-attach-cloudfront-origin-done'] = True
@@ -362,7 +362,7 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
         web_acl_arn = ""
         ip_set_id = ""
         ip_set_arn = ""
-        set_web_acl_flag = False
+        waf_web_acl_flag = False
         
 
         # Establish cross-account session
