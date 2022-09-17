@@ -92,8 +92,10 @@ def attach_cloudfront_origin(quests_api_client, team_data):
         # Lookup events in CloudFront
         cloudfront_client = xa_session.client('cloudfront')
         quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
-        cloudfront_response = cloudfront_client.list_distributions()
-        origin_domain_name = cloudfront_response['DistributionList']['Items'][0]['Origins']['Items'][0]['DomainName']
+        # cloudfront_response = cloudfront_client.list_distributions()
+        # origin_domain_name = cloudfront_response['DistributionList']['Items'][0]['Origins']['Items'][0]['DomainName']
+        cloudfront_response = cloudfront_client.get_distribution(Id=team_data['cloudfront-distribution-id'])
+        origin_domain_name = cloudfront_response['Distribution']['DistributionConfig']['Origins']['Items'][0]['DomainName']
         print(f"CloudFront result for team {team_data['team-id']}: {cloudfront_response}")
 
         # Complete task if CloudFront Origin was attached
@@ -106,7 +108,7 @@ def attach_cloudfront_origin(quests_api_client, team_data):
             response = quests_api_client.delete_hint(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                hint_key=hint_const.TASK1_HINT1_KEY,
+                hint_key=hint_const.TASK2_HINT1_KEY,
                 detail=True
             )
             # Handling a response status code other than 200. In this case, we are just logging
@@ -137,151 +139,21 @@ def attach_cloudfront_origin(quests_api_client, team_data):
 
     return team_data
 
-# def evaluate_monitoring(quests_api_client, team_data):
-#     print(f"Evaluating monitoring task for team {team_data['team-id']}")
-
-#     # Check whether task was completed already
-#     if not team_data['is-monitoring-chaos-done']:
-
-#         # Check if chaos has not started yet and the team has provided the EC2 IP address
-#         if not team_data['is-monitoring-chaos-started'] and team_data['is-ip-address']:
-
-#             # Start chaos event if timer is up or task 2 and 3 are done
-#             if ((team_data['is-cloudshell-launched']    # Task 2
-#                 and team_data['is-accesskey-rotated'])  # Task 3
-#                 or is_chaos_timer_up(team_data['monitoring-chaos-timer'],int(CHAOS_TIMER_MINUTES))
-#                 ):
-
-#                 print(f"Time for chaos event for team {team_data['team-id']}")
-
-#                 # Switch flag that chaos event has started
-#                 team_data['is-monitoring-chaos-started'] = True
-
-#                 # Establish cross-account session
-#                 print(f"Assuming Ops role for team {team_data['team-id']}")
-#                 xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
-
-#                 # Break network connectivity by removing ingress rules
-#                 print(f"Removing ingress rules from Security Group {team_data['security-group']}")
-#                 security_group = xa_session.resource('ec2').SecurityGroup(team_data['security-group'])
-#                 response = security_group.revoke_ingress(
-#                     IpPermissions=security_group.ip_permissions
-#                 )
-
-#                 # Wait for revoke_ingress call to fully complete
-#                 print(f"Waiting for revoke_ingress to be applied to SG {team_data['security-group']}")
-#                 while True:
-#                     time.sleep(5) # pause a bit to make sure the change is fully applied since it's not instant
-#                     response = xa_session.client('ec2').describe_security_groups(GroupIds=[team_data['security-group']])
-#                     ingress_size = len(response['SecurityGroups'][0]['IpPermissions'])
-#                     if ingress_size == 0:
-#                         break
-#                     print(f"Waiting a bit longer..")
-#                 print(f"revoke_ingress fully applied to SG {team_data['security-group']}")
-
-#                 # Post task 1 hint
-#                 quests_api_client.post_hint(
-#                     team_id=team_data['team-id'],
-#                     quest_id=QUEST_ID,
-#                     hint_key=hint_const.TASK1_HINT1_KEY,
-#                     label=hint_const.TASK1_HINT1_LABEL,
-#                     description=hint_const.TASK1_HINT1_DESCRIPTION,
-#                     value=hint_const.TASK1_HINT1_VALUE,
-#                     dashboard_index=hint_const.TASK1_HINT1_INDEX,
-#                     cost=hint_const.TASK1_HINT1_COST,
-#                     status=hint_const.STATUS_OFFERED
-#                 )
-
-#         # Award points if web app is up else detract points if down
-#         is_webapp_up = check_webapp(team_data)
-#         if is_webapp_up:
-#             print(f"The web application for team {team_data['team-id']} is UP")
-#             quests_api_client.post_score_event(
-#                 team_id=team_data["team-id"],
-#                 quest_id=QUEST_ID,
-#                 description=scoring_const.MONITORING_WEB_APP_UP_DESC,
-#                 points=scoring_const.MONITORING_WEB_APP_UP_POINTS
-#             )
-            
-#             # Delete app down message if present
-#             quests_api_client.delete_output(
-#                 team_id=team_data["team-id"],
-#                 quest_id=QUEST_ID, 
-#                 key=output_const.TASK1_WEBAPP_DOWN_KEY
-#             )
-#         else:
-#             print(f"The web application for team {team_data['team-id']} is DOWN")
-#             quests_api_client.post_score_event(
-#                 team_id=team_data["team-id"],
-#                 quest_id=QUEST_ID,
-#                 description=scoring_const.MONITORING_WEB_APP_DOWN_DESC,
-#                 points=scoring_const.MONITORING_WEB_APP_DOWN_POINTS
-#             )
-
-#             quests_api_client.post_output(
-#                 team_id=team_data['team-id'],
-#                 quest_id=QUEST_ID,
-#                 key=output_const.TASK1_WEBAPP_DOWN_KEY,
-#                 label=output_const.TASK1_WEBAPP_DOWN_LABEL,
-#                 value=output_const.TASK1_WEBAPP_DOWN_VALUE,
-#                 dashboard_index=output_const.TASK1_WEBAPP_DOWN_INDEX,
-#                 markdown=output_const.TASK1_WEBAPP_DOWN_MARKDOWN,
-#             )
-
-#         # Complete task if chaos event had started and web app is up
-#         if team_data['is-monitoring-chaos-started'] and is_webapp_up:
-            
-#             # Switch flag
-#             team_data['is-monitoring-chaos-done'] = True
-
-#             # Delete hint
-#             response = quests_api_client.delete_hint(
-#                 team_id=team_data['team-id'],
-#                 quest_id=QUEST_ID,
-#                 hint_key=hint_const.TASK1_HINT1_KEY,
-#                 detail=True
-#             )
-#             # Handling a response status code other than 200. In this case, we are just logging
-#             if response['statusCode'] != 200:
-#                 print(response)
-
-#             # Post task final message
-#             quests_api_client.post_output(
-#                 team_id=team_data['team-id'],
-#                 quest_id=QUEST_ID,
-#                 key=output_const.TASK1_COMPLETE_KEY,
-#                 label=output_const.TASK1_COMPLETE_LABEL,
-#                 value=output_const.TASK1_COMPLETE_VALUE,
-#                 dashboard_index=output_const.TASK1_COMPLETE_INDEX,
-#                 markdown=output_const.TASK1_COMPLETE_MARKDOWN,
-#             )
-
-#             # Award final points
-#             quests_api_client.post_score_event(
-#                 team_id=team_data["team-id"],
-#                 quest_id=QUEST_ID,
-#                 description=scoring_const.TASK1_COMPLETE_DESC,
-#                 points=scoring_const.TASK1_COMPLETE_POINTS
-#             )
-    
-#     return team_data
-
-
-# Checks whether the monitoring web app is up or done and returns True or False respectively
-def check_webapp(team_data):
-    try:
-        print(f"Testing web app status")
-        conn = http.client.HTTPConnection(team_data['ip-address'], timeout=5)
-        conn.request("GET", "/index.html")
-        res = conn.getresponse()
-        data = res.read().decode("utf-8") 
-        print(res.status)
-        if res.status != 200:
-            raise Exception(f"Web app down: {res.status} - {res.reason}")
-        return True
-    except Exception as e:
-        print(f"Web app not available: {e}")
-        return False
+# # Checks whether the monitoring web app is up or done and returns True or False respectively
+# def check_webapp(team_data):
+#     try:
+#         print(f"Testing web app status")
+#         conn = http.client.HTTPConnection(team_data['ip-address'], timeout=5)
+#         conn.request("GET", "/index.html")
+#         res = conn.getresponse()
+#         data = res.read().decode("utf-8") 
+#         print(res.status)
+#         if res.status != 200:
+#             raise Exception(f"Web app down: {res.status} - {res.reason}")
+#         return True
+#     except Exception as e:
+#         print(f"Web app not available: {e}")
+#         return False
 
 
 # Task 3 evaluation - CloudFront logs
@@ -298,10 +170,11 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
         # Lookup events in CloudFront
         cloudfront_client = xa_session.client('cloudfront')
         quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
-        cloudfront_response = cloudfront_client.list_distributions()
-        distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
-        cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
-        logging_flag = cloudfront_distribution_response['Distribution']['DistributionConfig']['Logging']['Enabled']
+        # cloudfront_response = cloudfront_client.list_distributions()
+        # distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
+        # cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
+        cloudfront_response = cloudfront_client.get_distribution(Id=team_data['cloudfront-distribution-id'])
+        logging_flag = cloudfront_response['Distribution']['DistributionConfig']['Logging']['Enabled']
 
         print(f"CloudFront result for team {team_data['team-id']}: {logging_flag}")
 
@@ -315,7 +188,7 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
             response = quests_api_client.delete_hint(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                hint_key=hint_const.TASK2_HINT1_KEY,
+                hint_key=hint_const.TASK3_HINT1_KEY,
                 detail=True
             )
             # Handling a response status code other than 200. In this case, we are just logging
@@ -354,7 +227,8 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
     print(f"Evaluating CloudFront WAF task for team {team_data['team-id']}")
 
     # Check whether task was completed already
-    if not team_data['is-cloudfront-ip-set-created'] or team_data['is-cloudfront-waf-attached']:
+    if not team_data['is-cloudfront-ip-set-created'] or not team_data['is-cloudfront-waf-attached']:
+        print("TASK 5 START")
 
         ip_address_from_task2b = "10.0.0.0" + "/32"
         created_web_acl_name = "waf-web-acl"
@@ -413,13 +287,13 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
             # Lookup events in CloudFront
             cloudfront_client = xa_session.client('cloudfront')
             quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
-            cloudfront_response = cloudfront_client.list_distributions()
-            distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
-            cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
+            # cloudfront_response = cloudfront_client.list_distributions()
+            # distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
+            # cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
+            cloudfront_response = cloudfront_client.get_distribution(Id=team_data['cloudfront-distribution-id'])
+            cloudfront_web_acl_id = cloudfront_response['Distribution']['DistributionConfig']['WebACLId']
 
-            cloudfront_web_acl_id = cloudfront_distribution_response['Distribution']['DistributionConfig']['WebACLId']
-
-            # print(f"CloudFront result for team {team_data['team-id']}: {logging_flag}")
+            print(f"TASK 5 result for team {team_data['team-id']}: {cloudfront_web_acl_id}")
 
             # Complete task if WebACL was attached
             if cloudfront_web_acl_id == web_acl_arn:
@@ -461,75 +335,6 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                 print(f"No matching CloudTrail events found for team {team_data['team-id']}")
 
     return team_data
-# def evaluate_access_key(quests_api_client, team_data):
-
-#     # Check whether the team has accepted the challenge and task has not been completed yet
-#     if team_data['credentials-task-started'] and not team_data['is-accesskey-rotated']:
-
-#         # Establish cross-account session
-#         print(f"Assuming Ops role for team {team_data['team-id']}")
-#         xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
-    
-#         # Check user's access key
-#         iam_client = xa_session.client('iam')
-#         keys = iam_client.list_access_keys(UserName='ReferenceDeveloper')
-#         status = "Not found"
-#         for key in keys['AccessKeyMetadata']:
-#             if (key['AccessKeyId'] == team_data['accesskey-value']):
-#                 status = key['Status']
-#                 print(f"Access key exists, checking if its active")
-#                 break
-    
-#         if status == "Active":
-#             print(f"access key has not been deactivated")
-
-#             # Detract points
-#             quests_api_client.post_score_event(
-#                 team_id=team_data["team-id"],
-#                 quest_id=QUEST_ID,
-#                 description=scoring_const.KEY_NOT_ROTATED_DESC,
-#                 points=scoring_const.KEY_NOT_ROTATED_POINTS
-#             )
-        
-#         elif status == "Inactive" or status == "Not found":
-                    
-#             print(f"Awarding points. Key has been deactivated or deleted")
-
-#             # Switch flag
-#             team_data['is-accesskey-rotated'] = True
-
-#             # Delete hint
-#             response = quests_api_client.delete_hint(
-#                 team_id=team_data['team-id'],
-#                 quest_id=QUEST_ID,
-#                 hint_key=hint_const.TASK3_HINT1_KEY,
-#                 detail=True
-#             )
-#             # Handling a response status code other than 200. In this case, we are just logging
-#             if response['statusCode'] != 200:
-#                 print(response)
-
-#             # Post task final message
-#             quests_api_client.post_output(
-#                 team_id=team_data['team-id'],
-#                 quest_id=QUEST_ID,
-#                 key=output_const.TASK3_COMPLETE_KEY,
-#                 label=output_const.TASK3_COMPLETE_LABEL,
-#                 value=output_const.TASK3_COMPLETE_VALUE,
-#                 dashboard_index=output_const.TASK3_COMPLETE_INDEX,
-#                 markdown=output_const.TASK3_COMPLETE_MARKDOWN,
-#             )
-
-#             # Award final points
-#             quests_api_client.post_score_event(
-#                 team_id=team_data["team-id"],
-#                 quest_id=QUEST_ID,
-#                 description=scoring_const.KEY_ROTATED_DESC,
-#                 points=scoring_const.KEY_ROTATED_POINTS
-#             )
-
-#     return team_data
-
 
 # Task 7 - The ultimate answer
 # The actual evaluation happens in Update Lambda. Here is the logic to enable the task

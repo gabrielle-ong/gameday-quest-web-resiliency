@@ -61,6 +61,7 @@ def lambda_handler(event, context):
             # 'ip-address': ip_address,
             # 'security-group': security_group,
             'is-ip-address': False,
+            'is-identified-origin': False,
             'is-attach-cloudfront-origin-done': False,
             'is-cloudfront-logs-enabled': False,
             'is-answer-to-ip-address-correct': False,

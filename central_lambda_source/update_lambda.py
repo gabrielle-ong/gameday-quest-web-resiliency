@@ -9,6 +9,7 @@ import quest_const
 import input_const
 import output_const
 import scoring_const
+import hint_const
 from aws_gameday_quests.gdQuestsApi import GameDayQuestsApiClient
 
 # Standard AWS GameDay Quests Environment Variables
@@ -48,19 +49,19 @@ def lambda_handler(event, context):
     print(f"Retrieved team state for team {event['team_id']}: {json.dumps(dynamodb_response, default=str)}")
     team_data = dynamodb_response['Item']
 
-    # Task 1 evaluation
-    if (event['key'] == input_const.TASK1_ENDPOINT_KEY
-        and not team_data['is-ip-address']): # This second check is needed to avoid multiple submissions since points are being given here
+    task1_origin = "www.amazon.com"
+    task4_ip_address = "192.0.2.200"
+
+    # Task 1 - Wrong origin domain
+    if (event['key'] == input_const.TASK1_ORIGIN_KEY
+        and not team_data['is-identified-origin']): # This second check is needed to avoid multiple submissions since points are being given here
 
         # Check team's input value
         value = event['value'].strip().strip("http://") # Being forgiven if leading spaces, trailing spaces, or protocol were added
-        if value == team_data['ip-address']:
+        if value == task1_origin:
 
             # Correct answer - switch flag to true
-            team_data['is-ip-address'] = True
-
-            # Start chaos event timer
-            team_data['monitoring-chaos-timer'] = int(datetime.now().timestamp())
+            team_data['is-identified-origin'] = True
 
             try:
                 # First update DynamoDB to avoid race conditions, then do the rest on success
@@ -70,24 +71,33 @@ def lambda_handler(event, context):
                 quests_api_client.delete_output(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID, 
-                    key=output_const.TASK1_IP_ADDRESS_WRONG_KEY
+                    key=output_const.TASK1_WRONG_ORIGIN_KEY
                 )
                 
                 # Delete input since cannot be updated as task can be started only once
                 quests_api_client.delete_input(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID, 
-                    key=input_const.TASK1_ENDPOINT_KEY
+                    key=input_const.TASK1_ORIGIN_KEY
                 )
+
+                # Delete hint
+                quests_api_client.delete_hint(
+                    team_id=team_data['team-id'],
+                    quest_id=QUEST_ID,
+                    hint_key=hint_const.TASK1_HINT1_KEY,
+                    detail=True
+                )
+
                 # Replace input with an output to leave a trace of what has been done
                 quests_api_client.post_output(
                     team_id=team_data['team-id'],
                     quest_id=QUEST_ID,
-                    key=output_const.TASK1_IP_ADDRESS_CORRECT_KEY,
-                    label=output_const.TASK1_IP_ADDRESS_CORRECT_LABEL,
-                    value=output_const.TASK1_IP_ADDRESS_CORRECT_VALUE.format(team_data['ip-address']),
-                    dashboard_index=output_const.TASK1_IP_ADDRESS_CORRECT_INDEX,
-                    markdown=output_const.TASK1_IP_ADDRESS_CORRECT_MARKDOWN,
+                    key=output_const.TASK1_CORRECT_ORIGIN_KEY,
+                    label=output_const.TASK1_CORRECT_ORIGIN_LABEL,
+                    value=output_const.TASK1_CORRECT_ORIGIN_VALUE.format(task1_origin),
+                    dashboard_index=output_const.TASK1_CORRECT_ORIGIN_INDEX,
+                    markdown=output_const.TASK1_CORRECT_ORIGIN_MARKDOWN,
                 )
                 # Award points
                 quests_api_client.post_score_event(
@@ -104,11 +114,11 @@ def lambda_handler(event, context):
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                key=output_const.TASK1_IP_ADDRESS_WRONG_KEY,
-                label=output_const.TASK1_IP_ADDRESS_WRONG_LABEL,
-                value=output_const.TASK1_IP_ADDRESS_WRONG_VALUE,
-                dashboard_index=output_const.TASK1_IP_ADDRESS_WRONG_INDEX,
-                markdown=output_const.TASK1_IP_ADDRESS_WRONG_MARKDOWN,
+                key=output_const.TASK1_WRONG_ORIGIN_KEY,
+                label=output_const.TASK1_WRONG_ORIGIN_LABEL,
+                value=output_const.TASK1_WRONG_ORIGIN_VALUE,
+                dashboard_index=output_const.TASK1_WRONG_ORIGIN_INDEX,
+                markdown=output_const.TASK1_WRONG_ORIGIN_MARKDOWN,
             )
             # Detract points
             quests_api_client.post_score_event(
@@ -118,58 +128,16 @@ def lambda_handler(event, context):
                 points=scoring_const.WRONG_IP_ADDRESS_POINTS
             )
 
-
-    # Task 3 activation
-    elif event['key'] == input_const.TASK3_READY_KEY:
-
-        # Check team's input value
-        if event['value'].strip().lower() == "ready":
-
-            # Update flag as task started
-            team_data['credentials-task-started'] = True
-
-            try:
-                # First update DynamoDB to avoid race conditions, then do the rest on success
-                dynamodb_utils.save_team_data(team_data, quest_team_status_table)
-
-                # Delete input since cannot be updated as task can be started only once
-                quests_api_client.delete_input(
-                    team_id=team_data["team-id"],
-                    quest_id=QUEST_ID, 
-                    key=input_const.TASK3_READY_KEY
-                )
-                # Post output
-                quests_api_client.post_output(
-                    team_id=team_data['team-id'],
-                    quest_id=QUEST_ID,
-                    key=output_const.TASK3_STARTED_KEY,
-                    label=output_const.TASK3_STARTED_LABEL,
-                    value=output_const.TASK3_STARTED_VALUE,
-                    dashboard_index=output_const.TASK3_STARTED_INDEX,
-                    markdown=output_const.TASK3_STARTED_MARKDOWN,
-                )
-                # Detract points
-                quests_api_client.post_score_event(
-                    team_id=team_data["team-id"],
-                    quest_id=QUEST_ID,
-                    description=scoring_const.KEY_NOT_ROTATED_DESC,
-                    points=scoring_const.KEY_NOT_ROTATED_POINTS
-                )
-            
-            except Exception as err:
-                print(f"Error while handling team update request: {err}")
-        else:
-            print(f"Received the input '{event['value']}' from the team and not sure what to do with it")
-
-    # Task 4 evaluation
-    elif event['key'] == input_const.TASK4_KEY:
+    # Task 4 - Needle in the ocean       
+    elif (event['key'] == input_const.TASK4_ENDPOINT_KEY
+        and not team_data['is-ip-address']): # This second check is needed to avoid multiple submissions since points are being given here
 
         # Check team's input value
-        value = event['value'].strip().lower()
-        if value in input_const.TASK4_KEY_CORRECT_ANSWERS:
+        value = event['value'].strip().strip("http://") # Being forgiven if leading spaces, trailing spaces, or protocol were added
+        if value == task4_ip_address:
 
             # Correct answer - switch flag to true
-            team_data['is-answer-to-life-correct'] = True
+            team_data['is-ip-address'] = True
 
             try:
                 # First update DynamoDB to avoid race conditions, then do the rest on success
@@ -179,58 +147,61 @@ def lambda_handler(event, context):
                 quests_api_client.delete_output(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID, 
-                    key=output_const.TASK4_WRONG_KEY
+                    key=output_const.TASK4_IP_ADDRESS_WRONG_KEY
                 )
-
+                
                 # Delete input since cannot be updated as task can be started only once
                 quests_api_client.delete_input(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID, 
-                    key=input_const.TASK4_KEY
+                    key=input_const.TASK4_ENDPOINT_KEY
                 )
 
-                # Post output
+                # Delete hint
+                quests_api_client.delete_hint(
+                    team_id=team_data['team-id'],
+                    quest_id=QUEST_ID,
+                    hint_key=hint_const.TASK4_HINT1_KEY,
+                    detail=True
+                )
+
+                # Replace input with an output to leave a trace of what has been done
                 quests_api_client.post_output(
                     team_id=team_data['team-id'],
                     quest_id=QUEST_ID,
-                    key=output_const.TASK4_CORRECT_KEY,
-                    label=output_const.TASK4_CORRECT_LABEL,
-                    value=output_const.TASK4_CORRECT_VALUE,
-                    dashboard_index=output_const.TASK4_CORRECT_INDEX,
-                    markdown=output_const.TASK4_CORRECT_MARKDOWN,
+                    key=output_const.TASK4_IP_ADDRESS_CORRECT_KEY,
+                    label=output_const.TASK4_IP_ADDRESS_CORRECT_LABEL,
+                    value=output_const.TASK4_IP_ADDRESS_CORRECT_VALUE.format(task4_ip_address),
+                    dashboard_index=output_const.TASK4_IP_ADDRESS_CORRECT_INDEX,
+                    markdown=output_const.TASK4_IP_ADDRESS_CORRECT_MARKDOWN,
                 )
-
                 # Award points
                 quests_api_client.post_score_event(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID,
-                    description=scoring_const.THE_ANSWER_CORRECT_DESC,
-                    points=scoring_const.THE_ANSWER_CORRECT_POINTS
+                    description=scoring_const.CORRECT_IP_ADDRESS_DESC,
+                    points=scoring_const.CORRECT_IP_ADDRESS_POINTS
                 )
-
+            
             except Exception as err:
                 print(f"Error while handling team update request: {err}")
-
         else:
-            print(f"Received wrong answer '{event['value']}' from the team")
-
             # Post output
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
-                key=output_const.TASK4_WRONG_KEY,
-                label=output_const.TASK4_WRONG_LABEL,
-                value=output_const.TASK4_WRONG_VALUE,
-                dashboard_index=output_const.TASK4_WRONG_INDEX,
-                markdown=output_const.TASK4_WRONG_MARKDOWN,
+                key=output_const.TASK4_IP_ADDRESS_WRONG_KEY,
+                label=output_const.TASK4_IP_ADDRESS_WRONG_LABEL,
+                value=output_const.TASK4_IP_ADDRESS_WRONG_VALUE,
+                dashboard_index=output_const.TASK4_IP_ADDRESS_WRONG_INDEX,
+                markdown=output_const.TASK4_IP_ADDRESS_WRONG_MARKDOWN,
             )
-
             # Detract points
             quests_api_client.post_score_event(
                 team_id=team_data["team-id"],
                 quest_id=QUEST_ID,
-                description=scoring_const.THE_ANSWER_WRONG_DESC,
-                points=scoring_const.THE_ANSWER_WRONG_POINTS
+                description=scoring_const.WRONG_IP_ADDRESS_DESC,
+                points=scoring_const.WRONG_IP_ADDRESS_POINTS
             )
 
     else:
