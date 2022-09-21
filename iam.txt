@@ -20,27 +20,49 @@
       "ec2:*",
       "iam:UpdateAccessKey",
       "iam:List*",
-      "iam:Get*"
+      "iam:Get*",
+      "s3:Get*",
+      "s3:Put*",
+      "s3:List*",
+      "logs:*",
+      "wafv2:*",
+      "cloudfront:*",
+      "cloudwatch:*",
+      "sns:*"
     ],
     "Effect": "Allow"
   }
 ]
+
 
 ╔══════════════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║ IAM Managed Policy ARNs  │ A list of managed IAM policy ARNs to attach to the TeamRole in an active Event. One ARN per line.                                 ║
 ║                          │ (e.g. arn:aws:iam::aws:policy/IAMReadOnlyAccess)                                                                                  ║
 ╚══════════════════════════╧═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-
+arn:aws:iam::aws:policy/AmazonS3FullAccess
+arn:aws:iam::aws:policy/AWSWAFFullAccess
+arn:aws:iam::aws:policy/AmazonSNSFullAccess
+arn:aws:iam::aws:policy/CloudFrontFullAccess
+arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+arn:aws:iam::aws:policy/AmazonEC2FullAccess
+arn:aws:iam::aws:policy/CloudWatchFullAccess
 
 ╔══════════════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║ IAM Trusted Services     │ A list of AWS services that the TeamRole should trust. One service per line. (e.g. s3.amazonaws.com)                              ║
 ╚══════════════════════════╧═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-
+s3.amazonaws.com
+wafv2.amazonaws.com
+sns.amazonaws.com
+cloudfront.amazonaws.com
+ec2.amazonaws.com
+cloudwatch.amazonaws.com
 
 ╔══════════════════════════╤═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║ IAM Service Linked Roles │ A list of service linked roles that should be pre-created for an active Event. One service linked role name per line.             ║
 ║                          │ (e.g. autoscaling.amazonaws.com)                                                                                                  ║
 ╚══════════════════════════╧═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
+elasticloadbalancing.amazonaws.com
+events.amazonaws.com
