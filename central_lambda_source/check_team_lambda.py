@@ -99,21 +99,21 @@ def attach_cloudfront_origin(quests_api_client, team_data):
         print(f"CloudFront result for team {team_data['team-id']}: {cloudfront_response}")
 
         # Complete task if CloudFront Origin was attached
-        if origin_domain_name == team_data['elb-dns-name']:
+        if origin_domain_name == team_data['elb-dns-name'].lower():
 
             # Switch flag
             team_data['is-attach-cloudfront-origin-done'] = True
 
             # Delete hint
-            response = quests_api_client.delete_hint(
+            quests_api_client.delete_hint(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
                 hint_key=hint_const.TASK2_HINT1_KEY,
                 detail=True
             )
             # Handling a response status code other than 200. In this case, we are just logging
-            if response['statusCode'] != 200:
-                print(response)
+            # if response['statusCode'] != 200:
+            #     print(response)
 
             # Post task final message
             quests_api_client.post_output(
@@ -185,15 +185,15 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
             team_data['is-cloudfront-logs-enabled'] = True
 
             # Delete hint
-            response = quests_api_client.delete_hint(
+            quests_api_client.delete_hint(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
                 hint_key=hint_const.TASK3_HINT1_KEY,
                 detail=True
             )
             # Handling a response status code other than 200. In this case, we are just logging
-            if response['statusCode'] != 200:
-                print(response)
+            # if response['statusCode'] != 200:
+            #     print(response)
 
             # Post task final message
             quests_api_client.post_output(
@@ -302,15 +302,15 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                 team_data['is-cloudfront-waf-attached'] = True
 
                 # Delete hint
-                response = quests_api_client.delete_hint(
+                quests_api_client.delete_hint(
                     team_id=team_data['team-id'],
                     quest_id=QUEST_ID,
                     hint_key=hint_const.TASK5_HINT1_KEY,
                     detail=True
                 )
                 # Handling a response status code other than 200. In this case, we are just logging
-                if response['statusCode'] != 200:
-                    print(response)
+                # if response['statusCode'] != 200:
+                #     print(response)
 
                 # Post task final message
                 quests_api_client.post_output(

@@ -17,7 +17,7 @@ TASK1_HINT1_COST=500
 TASK2_HINT1_KEY="task2_hint1"
 TASK2_HINT1_LABEL="Need help connecting the vacuum head?"
 TASK2_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK2_HINT1_VALUE="Take a look at the origin that has been attached to CloudFront distribution"
+TASK2_HINT1_VALUE="Click into your Amazon CloudFront distribution to edit its “Origins” to point to the application load balancer."
 TASK2_HINT1_INDEX=26
 TASK2_HINT1_COST=500
 
@@ -34,7 +34,7 @@ TASK2_HINT1_COST=500
 TASK3_HINT1_KEY="task3_hint1"
 TASK3_HINT1_LABEL="Having difficulty checking front vacuum head for LOGs?"
 TASK3_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK3_HINT1_VALUE="Ensure that you have logs enabled in CloudFront distribution"
+TASK3_HINT1_VALUE="Go to your Amazon CloudFront Distribution and edit its settings. Thereafter, look for the “enable logging” checkbox which you will the link up to your Amazon S3 bucket."
 TASK3_HINT1_INDEX=37
 TASK3_HINT1_COST=200
 
@@ -50,7 +50,7 @@ TASK4_HINT1_COST=200
 TASK5_HINT1_KEY="task5_hint1"
 TASK5_HINT1_LABEL="Having difficulty putting up a firewall?"
 TASK5_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK5_HINT1_VALUE="Ensure that you have IPSets and WAF rule created which would be used to tag to the CloudFront distribution."
+TASK5_HINT1_VALUE="Using the IP address identified in Task 4, create an IP Set on AWS WAF. Once created, go to the Web ACL that has already been pre-created for you. Under Rules, go to “Add my own rules and rule groups” to create a rule that blocks the IP Set created earlier. Once done, go to “Associated AWS resources” and add your Amazon CloudFront distribution. This will attach the AWS WAF rule to your Amazon CloudFront distribution. "
 TASK5_HINT1_INDEX=57
 TASK5_HINT1_COST=200
 
@@ -60,7 +60,9 @@ TASK6_HINT1_KEY="task6_hint1"
 TASK6_HINT1_LABEL="Having difficulty identifying the right metric?"
 TASK6_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
 TASK6_HINT1_VALUE="""
-Look at CloudWatch logs and identify the appropriate metric.
+There seems to be a spike in a specific metric on the graph, most likely the network traffic flowing in (NetworkIn).
+Head to cloudwatch to set up an alarm with these metrics so that we will always be notified of any large spike in traffic.
+Anomalous detection, >< scale of 2
 """
 TASK6_HINT1_INDEX=67
 TASK6_HINT1_COST=200
