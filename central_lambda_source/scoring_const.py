@@ -1,42 +1,44 @@
 # Copyright 2022 Amazon.com and its affiliates; all rights reserved. 
 # This file is Amazon Web Services Content and may not be duplicated or distributed without permission.
 
+# TASK 0
+CONTINUOUS_DESC="Free points for you"
+CONTINUOUS_POINTS=100
+
 # TASK 1
-WRONG_IP_ADDRESS_DESC="Wrong IP address"
-WRONG_IP_ADDRESS_POINTS=-500
+TASK1_WRONG_ORIGIN_DESC="Wrong origin identified"
+TASK1_WRONG_ORIGIN_POINTS=-500
 
-CORRECT_IP_ADDRESS_DESC="Correct IP address"
-CORRECT_IP_ADDRESS_POINTS=1000
-
-MONITORING_WEB_APP_UP_DESC="The web app is up"
-MONITORING_WEB_APP_UP_POINTS=10
-
-MONITORING_WEB_APP_DOWN_DESC="The web app is down"
-MONITORING_WEB_APP_DOWN_POINTS=-10
-
-TASK1_COMPLETE_DESC="Monitoring task completed"
-TASK1_COMPLETE_POINTS=1000
+TASK1_CORRECT_ORIGIN_DESC="Correct origin identified"
+TASK1_CORRECT_ORIGIN_POINTS=1000
 
 
 # TASK 2
-TASK2_COMPLETE_DESC="Successfully launched CloudShell"
-TASK2_COMPLETE_POINTS=1000
+TASK2_COMPLETE_DESC="Successfully configured origin in CloudFront distribution"
+TASK2_COMPLETE_POINTS=2000
 
 
 # TASK 3
-KEY_NOT_ROTATED_DESC="Access keys compromised"
-KEY_NOT_ROTATED_POINTS=-10
-
-KEY_ROTATED_DESC="Compromised access keys neutralized"
-KEY_ROTATED_POINTS=1000
+TASK3_COMPLETE_DESC="Successfully enabled logging in CloudFront distribution"
+TASK3_COMPLETE_POINTS=1000
 
 
 # TASK 4
-THE_ANSWER_WRONG_DESC="You chose poorly"
-THE_ANSWER_WRONG_POINTS=-5000
+TASK4_WRONG_IP_ADDRESS_DESC="Wrong IP address identified"
+TASK4_WRONG_IP_ADDRESS_POINTS=-500
 
-THE_ANSWER_CORRECT_DESC="42 is THE answer"
-THE_ANSWER_CORRECT_POINTS=1000
+TASK4_CORRECT_IP_ADDRESS_DESC="Correct IP address identified"
+TASK4_CORRECT_IP_ADDRESS_POINTS=1000
+
+
+# TASK 5
+TASK5_COMPLETE_DESC="Successfully set up Firewall"
+TASK5_COMPLETE_POINTS=2000
+
+
+# TASK 6
+TASK6_COMPLETE_DESC="Successfully created alarm"
+TASK6_COMPLETE_POINTS=2000
 
 
 # QUEST COMPLETION

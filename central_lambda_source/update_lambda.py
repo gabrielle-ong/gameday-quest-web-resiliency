@@ -103,8 +103,8 @@ def lambda_handler(event, context):
                 quests_api_client.post_score_event(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID,
-                    description=scoring_const.CORRECT_IP_ADDRESS_DESC,
-                    points=scoring_const.CORRECT_IP_ADDRESS_POINTS
+                    description=scoring_const.TASK1_CORRECT_ORIGIN_DESC,
+                    points=scoring_const.TASK1_CORRECT_ORIGIN_POINTS
                 )
             
             except Exception as err:
@@ -124,8 +124,8 @@ def lambda_handler(event, context):
             quests_api_client.post_score_event(
                 team_id=team_data["team-id"],
                 quest_id=QUEST_ID,
-                description=scoring_const.WRONG_IP_ADDRESS_DESC,
-                points=scoring_const.WRONG_IP_ADDRESS_POINTS
+                description=scoring_const.TASK1_WRONG_ORIGIN_DESC,
+                points=scoring_const.TASK1_WRONG_ORIGIN_POINTS
             )
 
     # Task 4 - Needle in the ocean       
@@ -179,8 +179,8 @@ def lambda_handler(event, context):
                 quests_api_client.post_score_event(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID,
-                    description=scoring_const.CORRECT_IP_ADDRESS_DESC,
-                    points=scoring_const.CORRECT_IP_ADDRESS_POINTS
+                    description=scoring_const.TASK4_CORRECT_IP_ADDRESS_DESC,
+                    points=scoring_const.TASK4_CORRECT_IP_ADDRESS_POINTS
                 )
             
             except Exception as err:
@@ -200,8 +200,8 @@ def lambda_handler(event, context):
             quests_api_client.post_score_event(
                 team_id=team_data["team-id"],
                 quest_id=QUEST_ID,
-                description=scoring_const.WRONG_IP_ADDRESS_DESC,
-                points=scoring_const.WRONG_IP_ADDRESS_POINTS
+                description=scoring_const.TASK4_WRONG_IP_ADDRESS_DESC,
+                points=scoring_const.TASK4_WRONG_IP_ADDRESS_POINTS
             )
 
     else:

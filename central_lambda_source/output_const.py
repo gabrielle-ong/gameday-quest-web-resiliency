@@ -24,12 +24,14 @@ Here’s the gist of it:
 RoboVax’s paranoia today. You have 45 minutes to set up network protection methods to give it a peace of mind.”
 
 
-*During this course, new hires are presented with a series of challenges to solve in any order they wish.
+_During this course, new hires are presented with a series of challenges to solve in any order they wish.
 Communicate with your team and choose a strategy for dividing up the work. Always keep an eye on Score Events (https://d7f46jhe0vm23.cloudfront.net/#/scoreevents).
 As you progress, you will gain the basic skills needed to build your own real-world problems (Quests) for future new hires to solve.
-**Please work in the AWS us-east-1 region.** *
+**Please work in the AWS us-east-1 region.**_
 
-<ARCHITECTURE DIAGRAM>
+Here is the AWS Architecture Diagram of the resources that have been provisioned for you:
+
+![architecture_task0]({})
 """
 WELCOME_INDEX=1
 WELCOME_MARKDOWN=True
@@ -42,7 +44,7 @@ TASK1_VALUE="""
 connect to the application. Quick! Find out which origin (URL) our content delivery network (CDN) is currently pointing to.
 The CDN service web page should look something like this:
 
-<CLOUDFRONT CONSOLE>
+![cf_console_task1]({})
 """
 TASK1_INDEX=10
 TASK1_MARKDOWN=True

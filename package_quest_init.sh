@@ -5,7 +5,7 @@
 
 QUEST_ROOT_DIR=${PWD}
 BUILD_QUEST_NAME=web_resiliency_quest
-BUILD_QUEST_ID=2ae514a9-a6dc-4fc0-a797-3f4a7bbd1d63
+BUILD_QUEST_ID=4a841f49-25c9-43c2-bf9d-da2b97142027
 BUILD_QUEST_BUCKET_NAME=${QDK_ASSETS_BUCKET}                              # when deploying locally
 #BUILD_QUEST_BUCKET_NAME=ee-assets-prod-us-east-1                         # when deploying to production
 # Include trailing / if a value is defined!
@@ -52,6 +52,8 @@ aws s3 cp ${QUEST_ARTIFACTS_ZIP} s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_B
 echo -e "\nUploading additional Quest artifacts to S3"
 cd ${QUEST_ROOT_DIR}
 aws s3 cp artifacts/images/sample_log.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/sample_log.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/architecture_task0.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task0.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/cf_console_task1.png ${PROFILE_ARGUMENT}
   
 
 

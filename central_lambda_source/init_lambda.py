@@ -78,23 +78,27 @@ def lambda_handler(event, context):
     print(f"Created team {team_id} in {QUEST_TEAM_STATUS_TABLE}. Response: {json.dumps(dynamo_put_response, default=str)}")
 
     # Post welcome message to the team
+    image_url_task0 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task0.png",signed_duration=86400)
+
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
         key=output_const.WELCOME_KEY,
         label=output_const.WELCOME_LABEL,
-        value=output_const.WELCOME_VALUE,
+        value=output_const.WELCOME_VALUE.format(image_url_task0),
         dashboard_index=output_const.WELCOME_INDEX,
         markdown=output_const.WELCOME_MARKDOWN,
     )
 
     # TASK 1
+    image_url_task1 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}cf_console_task1.png",signed_duration=86400)
+
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
         key=output_const.TASK1_KEY,
         label=output_const.TASK1_LABEL,
-        value=output_const.TASK1_VALUE.format(GAMEDAY_REGION),
+        value=output_const.TASK1_VALUE.format(image_url_task1),
         dashboard_index=output_const.TASK1_INDEX,
         markdown=output_const.TASK1_MARKDOWN,
     )
@@ -122,12 +126,14 @@ def lambda_handler(event, context):
 
 
     # TASK 2
+    image_url_task2 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}cf_console_task2.png",signed_duration=86400)
+
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
         key=output_const.TASK2_KEY,
         label=output_const.TASK2_LABEL,
-        value=output_const.TASK2_VALUE.format(GAMEDAY_REGION),
+        value=output_const.TASK2_VALUE.format(image_url_task2),
         dashboard_index=output_const.TASK2_INDEX,
         markdown=output_const.TASK2_MARKDOWN,
     )

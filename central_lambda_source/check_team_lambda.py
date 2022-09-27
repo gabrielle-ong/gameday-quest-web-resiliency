@@ -210,8 +210,8 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
             quests_api_client.post_score_event(
                 team_id=team_data["team-id"],
                 quest_id=QUEST_ID,
-                description=scoring_const.TASK2_COMPLETE_DESC,
-                points=scoring_const.TASK2_COMPLETE_POINTS
+                description=scoring_const.TASK3_COMPLETE_DESC,
+                points=scoring_const.TASK3_COMPLETE_POINTS
             )
 
         else:
@@ -327,8 +327,8 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                 quests_api_client.post_score_event(
                     team_id=team_data["team-id"],
                     quest_id=QUEST_ID,
-                    description=scoring_const.TASK2_COMPLETE_DESC,
-                    points=scoring_const.TASK2_COMPLETE_POINTS
+                    description=scoring_const.TASK5_COMPLETE_DESC,
+                    points=scoring_const.TASK5_COMPLETE_POINTS
                 )
 
             else:
