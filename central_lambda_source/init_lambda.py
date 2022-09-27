@@ -67,6 +67,7 @@ def lambda_handler(event, context):
             'is-answer-to-ip-address-correct': False,
             'is-cloudfront-ip-set-created': False,
             'is-cloudfront-waf-attached': False,
+            'is-cloudwatch-alarm-created': False,
             # 'accesskey-value': accesskey_value,
             'is-accesskey-rotated': False,
             'credentials-task-started': False,

@@ -49,6 +49,9 @@ def lambda_handler(event, context):
     # Make a copy of the original array to be able later on to do a comparison and validate whether a DynamoDB update is needed    
     team_data = dynamodb_response['Item'].copy() # Check init_lambda for the format
 
+    # Task 0 to start continuous scoring
+    team_data = continuous_scoring(quests_api_client, team_data)
+
     # Task 1 is check cloudfront origin
 
     # Task 2 evaluation
@@ -66,7 +69,7 @@ def lambda_handler(event, context):
     # team_data = evaluate_access_key(quests_api_client, team_data)
 
     # Task 6 evaluation
-    team_data = evaluate_final_answer(quests_api_client, team_data)
+    team_data = evaluate_cloudwatch_alarm(quests_api_client, team_data)
 
     # Complete quest if everything is done
     check_and_complete_quest(quests_api_client, QUEST_ID, team_data)
@@ -77,6 +80,20 @@ def lambda_handler(event, context):
     else:
         dynamodb_utils.save_team_data(team_data, quest_team_status_table)
 
+# Task 0 - Welcome (Continuous scoring)
+def continuous_scoring(quests_api_client, team_data):
+    print(f"Continuous scoring started for team {team_data['team-id']}")
+
+    # Check whether quest is completed
+    if not check_and_complete_quest(quests_api_client, QUEST_ID, team_data):
+        quests_api_client.post_score_event(
+            team_id=team_data["team-id"],
+            quest_id=QUEST_ID,
+            description=scoring_const.CONTINUOUS_DESC,
+            points=scoring_const.CONTINUOUS_POINTS
+        )
+
+    return team_data
 
 # Task 2 evaluation - CloudFront Distribution Origin
 def attach_cloudfront_origin(quests_api_client, team_data):
@@ -336,39 +353,52 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
 
     return team_data
 
-# Task 7 - The ultimate answer
-# The actual evaluation happens in Update Lambda. Here is the logic to enable the task
-def evaluate_final_answer(quests_api_client, team_data):
+# Task 6 - CloudWatch Metrics
+def evaluate_cloudwatch_alarm(quests_api_client, team_data):
 
-    # Enable this task as soon as the team completed all the other tasks
-    if (team_data['is-attach-cloudfront-origin-done']           # Task 1
-        and team_data['is-cloudfront-logs-enabled']         # Task 2a
-        and team_data['is-answer-to-ip-address-correct']    # Task 2b
-        and team_data['is-cloudfront-ip-set-created']       # Task 2c
-        and team_data['is-cloudfront-waf-attached']         # Task 2c
-        and not team_data['is-final-task-enabled']):    # Task 4 (this task not yet enabled)
+    if not team_data['is-cloudwatch-alarm-created']:
+        print("TASK 6 START")
 
-        # Switch flag
-        team_data['is-final-task-enabled'] = True
+        alarm_flag = False
+        
+        # Complete task if WebACL was attached
+        if alarm_flag:
 
-        # Post Task 4 instructions
-        quests_api_client.post_output(
-            team_id=team_data['team-id'],
-            quest_id=QUEST_ID,
-            key=output_const.TASK4_KEY,
-            label=output_const.TASK4_LABEL,
-            value=output_const.TASK4_VALUE,
-            dashboard_index=output_const.TASK4_INDEX,
-            markdown=output_const.TASK4_MARKDOWN,
-        )
-        quests_api_client.post_input(
-            team_id=team_data['team-id'],
-            quest_id=QUEST_ID,
-            key=input_const.TASK4_KEY,
-            label=input_const.TASK4_LABEL,
-            description=input_const.TASK4_DESCRIPTION,
-            dashboard_index=input_const.TASK4_INDEX
-        )
+            # Switch flag
+            team_data['is-cloudwatch-alarm-created'] = True
+
+            # Delete hint
+            quests_api_client.delete_hint(
+                team_id=team_data['team-id'],
+                quest_id=QUEST_ID,
+                hint_key=hint_const.TASK6_HINT1_KEY,
+                detail=True
+            )
+            # Handling a response status code other than 200. In this case, we are just logging
+            # if response['statusCode'] != 200:
+            #     print(response)
+
+            # Post task final message
+            quests_api_client.post_output(
+                team_id=team_data['team-id'],
+                quest_id=QUEST_ID,
+                key=output_const.TASK6_COMPLETE_KEY,
+                label=output_const.TASK6_COMPLETE_LABEL,
+                value=output_const.TASK6_COMPLETE_VALUE,
+                dashboard_index=output_const.TASK6_COMPLETE_INDEX,
+                markdown=output_const.TASK6_COMPLETE_MARKDOWN,
+            )
+
+            # Award final points
+            quests_api_client.post_score_event(
+                team_id=team_data["team-id"],
+                quest_id=QUEST_ID,
+                description=scoring_const.TASK6_COMPLETE_DESC,
+                points=scoring_const.TASK6_COMPLETE_POINTS
+            )
+
+        else:
+            print(f"No matching CloudTrail events found for team {team_data['team-id']}")
 
     return team_data
 
@@ -377,12 +407,13 @@ def evaluate_final_answer(quests_api_client, team_data):
 def check_and_complete_quest(quests_api_client, quest_id, team_data):
 
     # Check if everything is done
-    if (team_data['is-attach-cloudfront-origin-done']       # Task 1
-        and team_data['is-cloudfront-logs-enabled']         # Task 2a
-        and team_data['is-answer-to-ip-address-correct']    # Task 2b
-        and team_data['is-cloudfront-ip-set-created']       # Task 2c
-        and team_data['is-cloudfront-waf-attached']         # Task 2c
-        and team_data['is-answer-to-life-correct']):    # Task 4
+    if (team_data['is-identified-origin']                   # Task 1
+        and team_data['is-attach-cloudfront-origin-done']   # Task 2
+        and team_data['is-cloudfront-logs-enabled']         # Task 3
+        and team_data['is-answer-to-ip-address-correct']    # Task 4
+        and team_data['is-cloudfront-ip-set-created']       # Task 5
+        and team_data['is-cloudfront-waf-attached']         # Task 5
+        and team_data['is-cloudwatch-alarm-created']):      # Task 6
 
         # Award quest complete points
         print(f"Team {team_data['team-id']} has completed this quest, posting output and awarding points")
