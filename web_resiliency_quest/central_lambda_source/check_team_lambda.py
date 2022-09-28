@@ -75,7 +75,7 @@ def lambda_handler(event, context):
     team_data = evaluate_cloudwatch_alarm(quests_api_client, team_data)
 
     # Complete quest if everything is done
-    check_and_complete_quest(quests_api_client, QUEST_ID, team_data)
+    team_data = check_and_complete_quest(quests_api_client, QUEST_ID, team_data)
 
     # Compare initial DynamoDB item with its copy to check whether changes were made. 
     if dynamodb_response['Item']==team_data:
@@ -88,7 +88,7 @@ def continuous_scoring(quests_api_client, team_data):
     print(f"Continuous scoring started for team {team_data['team-id']}")
 
     # Check whether quest is completed
-    if not check_and_complete_quest(quests_api_client, QUEST_ID, team_data):
+    if not team_data['quest-completed']:
         quests_api_client.post_score_event(
             team_id=team_data["team-id"],
             quest_id=QUEST_ID,
@@ -452,6 +452,8 @@ def check_and_complete_quest(quests_api_client, quest_id, team_data):
 
         # Award quest complete points
         print(f"Team {team_data['team-id']} has completed this quest, posting output and awarding points")
+        team_data['quest-completed'] = True
+
         quests_api_client.post_score_event(
             team_id=team_data["team-id"],
             quest_id=quest_id,
@@ -484,9 +486,9 @@ def check_and_complete_quest(quests_api_client, quest_id, team_data):
         # Complete quest
         quests_api_client.post_quest_complete(team_id=team_data['team-id'], quest_id=quest_id)
 
-        return True
+        return team_data
 
-    return False
+    return team_data
 
 
 # Checks whether the chaos event timer is up by calculating the difference between the current time and 

@@ -38,7 +38,7 @@ Here is the AWS Architecture Diagram of the resources that have been provisioned
 
 ![architecture_task0]({})
 """
-WELCOME_2_INDEX=2
+WELCOME_2_INDEX=5
 WELCOME_2_MARKDOWN=True
 
 

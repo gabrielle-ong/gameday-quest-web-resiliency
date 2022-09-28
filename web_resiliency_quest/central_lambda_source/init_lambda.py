@@ -58,9 +58,6 @@ def lambda_handler(event, context):
             'cloudfront-distribution-id': cloudfront_distribution_id,
             'elb-dns-name': elb_dns_name,
             'waf_acl_id': waf_acl_id,
-            # 'ip-address': ip_address,
-            # 'security-group': security_group,
-            'is-ip-address': False,
             'is-identified-origin': False,
             'is-attach-cloudfront-origin-done': False,
             'is-cloudfront-logs-enabled': False,
@@ -68,11 +65,7 @@ def lambda_handler(event, context):
             'is-cloudfront-ip-set-created': False,
             'is-cloudfront-waf-attached': False,
             'is-cloudwatch-alarm-created': False,
-            # 'accesskey-value': accesskey_value,
-            'is-accesskey-rotated': False,
-            'credentials-task-started': False,
-            'is-final-task-enabled': False,
-            'is-answer-to-life-correct': False,
+            'quest-completed': False,
             'version': 0 # This is for optimistic locking
         }
     )
