@@ -358,8 +358,35 @@ def evaluate_cloudwatch_alarm(quests_api_client, team_data):
 
     if not team_data['is-cloudwatch-alarm-created']:
         print("TASK 6 START")
-
+        
         alarm_flag = False
+
+        # Establish cross-account session
+        print(f"Assuming Ops role for team {team_data['team-id']}")
+        xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
+
+        # Lookup events in WAF IP Sets
+        cloudwatch_client = xa_session.client('cloudwatch')
+        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
+        cloudwatch_metrics_response = cloudwatch_client.describe_alarms_for_metric(
+            MetricName="Requests",
+            Namespace="AWS/CloudFront",
+            Dimensions=[
+                {
+                   "Name":"Region",
+                   "Value":"Global"
+                },
+                {
+                    'Name': 'DistributionId',
+                    'Value': team_data['cloudfront-distribution-id']
+                },
+            ]
+        )
+
+        
+        if cloudwatch_metrics_response['MetricAlarms']:
+            alarm_flag = True
+
         
         # Complete task if WebACL was attached
         if alarm_flag:

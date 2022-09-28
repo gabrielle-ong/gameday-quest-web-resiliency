@@ -16,7 +16,7 @@ Parameters:
 
   # Additional parameters required by this template
   QuestId:
-    Default: 2ae514a9-a6dc-4fc0-a797-3f4a7bbd1d63
+    Default: 4a841f49-25c9-43c2-bf9d-da2b97142027
     Description: The ID assigned to this quest
     Type: String
 
