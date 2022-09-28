@@ -6,38 +6,38 @@ CONTINUOUS_DESC="Free points for you"
 CONTINUOUS_POINTS=100
 
 # TASK 1
-TASK1_WRONG_ORIGIN_DESC="Wrong origin identified"
-TASK1_WRONG_ORIGIN_POINTS=-200
+TASK1_WRONG_ORIGIN_DESC="Task 1: Wrong origin identified"
+TASK1_WRONG_ORIGIN_POINTS=-100
 
-TASK1_CORRECT_ORIGIN_DESC="Correct origin identified"
+TASK1_CORRECT_ORIGIN_DESC="Task 1: Correct origin identified"
 TASK1_CORRECT_ORIGIN_POINTS=1000
 
 
 # TASK 2
-TASK2_COMPLETE_DESC="Successfully configured origin in CloudFront distribution"
+TASK2_COMPLETE_DESC="Task 2: Successfully configured origin in CloudFront distribution"
 TASK2_COMPLETE_POINTS=2000
 
 
 # TASK 3
-TASK3_COMPLETE_DESC="Successfully enabled logging in CloudFront distribution"
+TASK3_COMPLETE_DESC="Task 3: Successfully enabled logging in CloudFront distribution"
 TASK3_COMPLETE_POINTS=1000
 
 
 # TASK 4
-TASK4_WRONG_IP_ADDRESS_DESC="Wrong IP address identified"
-TASK4_WRONG_IP_ADDRESS_POINTS=-200
+TASK4_WRONG_IP_ADDRESS_DESC="Task 4: Wrong IP address identified"
+TASK4_WRONG_IP_ADDRESS_POINTS=-100
 
-TASK4_CORRECT_IP_ADDRESS_DESC="Correct IP address identified"
+TASK4_CORRECT_IP_ADDRESS_DESC="Task 4: Correct IP address identified"
 TASK4_CORRECT_IP_ADDRESS_POINTS=1000
 
 
 # TASK 5
-TASK5_COMPLETE_DESC="Successfully set up Firewall"
+TASK5_COMPLETE_DESC="Task 5: Successfully set up Firewall"
 TASK5_COMPLETE_POINTS=2000
 
 
 # TASK 6
-TASK6_COMPLETE_DESC="Successfully created alarm"
+TASK6_COMPLETE_DESC="Task 6: Successfully created alarm"
 TASK6_COMPLETE_POINTS=2000
 
 

@@ -12,6 +12,7 @@ import hint_const
 import scoring_const
 import http.client
 import time
+import ui_utils
 from aws_gameday_quests.gdQuestsApi import GameDayQuestsApiClient
 
 # Standard AWS GameDay Quests Environment Variables
@@ -19,6 +20,8 @@ QUEST_ID = os.environ['QUEST_ID']
 QUEST_API_BASE = os.environ['QUEST_API_BASE']
 QUEST_API_TOKEN = os.environ['QUEST_API_TOKEN']
 GAMEDAY_REGION = os.environ['GAMEDAY_REGION']
+ASSETS_BUCKET = os.environ['ASSETS_BUCKET']
+ASSETS_BUCKET_PREFIX = os.environ['ASSETS_BUCKET_PREFIX']
 
 # Quest Environment Variables
 QUEST_TEAM_STATUS_TABLE = os.environ['QUEST_TEAM_STATUS_TABLE']
@@ -133,12 +136,14 @@ def attach_cloudfront_origin(quests_api_client, team_data):
             #     print(response)
 
             # Post task final message
+            image_url_task2 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task2.png",signed_duration=86400)
+            
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
                 key=output_const.TASK2_COMPLETE_KEY,
                 label=output_const.TASK2_COMPLETE_LABEL,
-                value=output_const.TASK2_COMPLETE_VALUE,
+                value=output_const.TASK2_COMPLETE_VALUE.format(image_url_task2), 
                 dashboard_index=output_const.TASK2_COMPLETE_INDEX,
                 markdown=output_const.TASK2_COMPLETE_MARKDOWN,
             )
@@ -213,12 +218,14 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
             #     print(response)
 
             # Post task final message
+            image_url_task3 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task3.png",signed_duration=86400)
+
             quests_api_client.post_output(
                 team_id=team_data['team-id'],
                 quest_id=QUEST_ID,
                 key=output_const.TASK3_COMPLETE_KEY,
                 label=output_const.TASK3_COMPLETE_LABEL,
-                value=output_const.TASK3_COMPLETE_VALUE,
+                value=output_const.TASK3_COMPLETE_VALUE.format(image_url_task3),
                 dashboard_index=output_const.TASK3_COMPLETE_INDEX,
                 markdown=output_const.TASK3_COMPLETE_MARKDOWN,
             )
@@ -247,7 +254,7 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
     if not team_data['is-cloudfront-ip-set-created'] or not team_data['is-cloudfront-waf-attached']:
         print("TASK 5 START")
 
-        ip_address_from_task2b = "10.0.0.0" + "/32"
+        ip_address_from_task2b = "52.23.186.156" + "/32"
         created_web_acl_name = "waf-web-acl"
         web_acl_id = ""
         web_acl_arn = ""
@@ -330,12 +337,13 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                 #     print(response)
 
                 # Post task final message
+                image_url_task5 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task5.png",signed_duration=86400)
                 quests_api_client.post_output(
                     team_id=team_data['team-id'],
                     quest_id=QUEST_ID,
                     key=output_const.TASK5_COMPLETE_KEY,
                     label=output_const.TASK5_COMPLETE_LABEL,
-                    value=output_const.TASK5_COMPLETE_VALUE,
+                    value=output_const.TASK5_COMPLETE_VALUE.format(image_url_task5),
                     dashboard_index=output_const.TASK5_COMPLETE_INDEX,
                     markdown=output_const.TASK5_COMPLETE_MARKDOWN,
                 )
@@ -461,12 +469,14 @@ def check_and_complete_quest(quests_api_client, quest_id, team_data):
         )
 
         # Post quest complete message
+        image_url_questcomplete = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_final.png",signed_duration=86400)
+
         quests_api_client.post_output(
             team_id=team_data['team-id'],
             quest_id=quest_id,
             key=output_const.QUEST_COMPLETE_KEY,
             label=output_const.QUEST_COMPLETE_LABEL,
-            value=output_const.QUEST_COMPLETE_VALUE,
+            value=output_const.QUEST_COMPLETE_VALUE.format(image_url_questcomplete),
             dashboard_index=output_const.QUEST_COMPLETE_INDEX,
             markdown=output_const.QUEST_COMPLETE_MARKDOWN,
         )

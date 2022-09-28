@@ -10,6 +10,7 @@ import input_const
 import output_const
 import scoring_const
 import hint_const
+import ui_utils
 from aws_gameday_quests.gdQuestsApi import GameDayQuestsApiClient
 
 # Standard AWS GameDay Quests Environment Variables
@@ -50,7 +51,7 @@ def lambda_handler(event, context):
     team_data = dynamodb_response['Item']
 
     task1_origin = "www.amazon.com"
-    task4_ip_address = "192.0.2.200"
+    task4_ip_address = "52.23.186.156"
 
     # Task 1 - Wrong origin domain
     if (event['key'] == input_const.TASK1_ORIGIN_KEY
@@ -95,7 +96,7 @@ def lambda_handler(event, context):
                     quest_id=QUEST_ID,
                     key=output_const.TASK1_CORRECT_ORIGIN_KEY,
                     label=output_const.TASK1_CORRECT_ORIGIN_LABEL,
-                    value=output_const.TASK1_CORRECT_ORIGIN_VALUE.format(task1_origin),
+                    value=output_const.TASK1_CORRECT_ORIGIN_VALUE,
                     dashboard_index=output_const.TASK1_CORRECT_ORIGIN_INDEX,
                     markdown=output_const.TASK1_CORRECT_ORIGIN_MARKDOWN,
                 )
@@ -130,14 +131,14 @@ def lambda_handler(event, context):
 
     # Task 4 - Needle in the ocean       
     elif (event['key'] == input_const.TASK4_ENDPOINT_KEY
-        and not team_data['is-ip-address']): # This second check is needed to avoid multiple submissions since points are being given here
+        and not team_data['is-answer-to-ip-address-correct']): # This second check is needed to avoid multiple submissions since points are being given here
 
         # Check team's input value
         value = event['value'].strip().strip("http://") # Being forgiven if leading spaces, trailing spaces, or protocol were added
         if value == task4_ip_address:
 
             # Correct answer - switch flag to true
-            team_data['is-ip-address'] = True
+            team_data['is-answer-to-ip-address-correct'] = True
 
             try:
                 # First update DynamoDB to avoid race conditions, then do the rest on success
@@ -171,7 +172,7 @@ def lambda_handler(event, context):
                     quest_id=QUEST_ID,
                     key=output_const.TASK4_IP_ADDRESS_CORRECT_KEY,
                     label=output_const.TASK4_IP_ADDRESS_CORRECT_LABEL,
-                    value=output_const.TASK4_IP_ADDRESS_CORRECT_VALUE.format(task4_ip_address),
+                    value=output_const.TASK4_IP_ADDRESS_CORRECT_VALUE,
                     dashboard_index=output_const.TASK4_IP_ADDRESS_CORRECT_INDEX,
                     markdown=output_const.TASK4_IP_ADDRESS_CORRECT_MARKDOWN,
                 )

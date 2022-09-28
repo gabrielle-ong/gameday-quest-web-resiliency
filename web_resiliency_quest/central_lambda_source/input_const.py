@@ -11,7 +11,7 @@ TASK1_ORIGIN_DESCRIPTION="eg. www.example.com"
 TASK4_ENDPOINT_KEY='task4_ip_address'
 TASK4_ENDPOINT_INDEX=41
 TASK4_ENDPOINT_LABEL="What is the IP address the attack is coming from?"
-TASK4_ENDPOINT_DESCRIPTION="eg. 172.217.22.14"
+TASK4_ENDPOINT_DESCRIPTION="eg. 52.23.186.156"
 
 
 # # # TASK 3 - CloudWatch Metric
