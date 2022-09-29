@@ -8,6 +8,7 @@ WELCOME_1_VALUE="""
 When you’re ready, line up and brace yourselves.....
 
 ![robot_queue_image]({})
+<img src={} width=100% alt="architecture_task0">
 
 Your teammate whispers:
 
@@ -16,8 +17,8 @@ _“Psst hey! You’re new here right? I’m sure you’re wondering whats going
 **The note reads:**
 
 * Unicorn.Rentals has an infamous employee who is a sentient A.I. initially programmed to be a **robot vacuum**. 
-* After the last few months of hiring issues, the A.I. rose up the ranks and is now the CTO of the company. 
-* It’s name is RoboVax-9000 and it is **extremely paranoid about high traffic attacks and bad actors** out to destroy the business. 
+* After the last few months of hiring issues, RoboVax rose up the ranks and is now the **CTO of the company**. 
+* Its name is RoboVax-9000 and it is **extremely paranoid about high traffic attacks and bad actors** out to destroy the business. 
 """
 WELCOME_1_INDEX=1
 WELCOME_1_MARKDOWN=True
@@ -30,13 +31,13 @@ _"Today is our team’s first day. Being the latest hires in the company, the CE
 
 _The CEO has shared that we have 45 minutes to set up infrastructure protection methods to give RoboVax a peace of mind."_
 
-Your team will be presented with a series of challenges to solve. Communicate with your team and choose a strategy for dividing up the work. Always keep an eye on your Score Events. As you progress, you will gain the basic skills needed to solve real-world problems.
+Your team will be presented with a series of tasks to solve. Always keep an eye on your Score Events to check the points you've earned. 
 
-**Please work in the AWS us-east-1 region.**
+As you progress, you will gain the basic skills needed to solve real-world problems.
 
 Here is the AWS Architecture Diagram of the resources that have been provisioned for you:
 
-![architecture_task0]({})
+<img src={} width=100% alt="architecture_task0">
 """
 WELCOME_2_INDEX=5
 WELCOME_2_MARKDOWN=True
@@ -44,46 +45,47 @@ WELCOME_2_MARKDOWN=True
 
 # Task 1 - Cloudfront distribution wrong-origin
 TASK1_KEY="task1"
-TASK1_LABEL="Task 1: What is CloudFront distribution origin pointing to?"
+TASK1_LABEL="##Task 1: What is CloudFront distribution origin pointing to?"
 TASK1_VALUE="""
+##Test header
 *BEEP BOOP* - Your first task from RoboVax is here! It seems like our customers are complaining that they are unable to
 connect to the application. Quick! Find out which origin (URL) our content delivery network (CDN) is currently pointing to.
 The CloudFront service web page should look something like this:
 
-![cf_console_task1]({})
+<img src={} width=100% alt="cf_console_task1">
 """
 TASK1_INDEX=10
 TASK1_MARKDOWN=True
 
 TASK1_WRONG_ORIGIN_KEY="task1_wrong_answer"
-TASK1_WRONG_ORIGIN_LABEL="That's not quite right!"
+TASK1_WRONG_ORIGIN_LABEL="Task 1: That's not quite right!"
 TASK1_WRONG_ORIGIN_VALUE="Not sure how you configured that, but that's not correct."
 TASK1_WRONG_ORIGIN_INDEX=14
 TASK1_WRONG_ORIGIN_MARKDOWN=True
 
 
 TASK1_CORRECT_ORIGIN_KEY="task1_correct_answer"
-TASK1_CORRECT_ORIGIN_LABEL="Correct! but..."
+TASK1_CORRECT_ORIGIN_LABEL="Task 1: Correct! However, that looks strange..."
 TASK1_CORRECT_ORIGIN_VALUE="Our CloudFront origin is currently pointing to www.amazon.com. Are they going shopping instead?"
 TASK1_CORRECT_ORIGIN_INDEX=15
 TASK1_CORRECT_ORIGIN_MARKDOWN=True
 
 
-TASK1_COMPLETE_KEY="task1_complete"
-TASK1_COMPLETE_LABEL="Identify distribution origin: Passed!"
-TASK1_COMPLETE_VALUE="""
-All done. Thank you for your help.
-"""
-TASK1_COMPLETE_INDEX=17
-TASK1_COMPLETE_MARKDOWN=True
+# TASK1_COMPLETE_KEY="task1_complete"
+# TASK1_COMPLETE_LABEL="Identify distribution origin: Passed!"
+# TASK1_COMPLETE_VALUE="""
+# All done. Thank you for your help.
+# """
+# TASK1_COMPLETE_INDEX=17
+# TASK1_COMPLETE_MARKDOWN=True
 
 # TASK 2 - CloudFront distribution change-origin
 TASK2_KEY="task2"
-TASK2_LABEL="Task 2: Now correctly configure the CloudFront distribution to your Application Load Balancer"
+TASK2_LABEL="Task 2: Configure the CloudFront distribution origin to your application"
 TASK2_VALUE="""
 Hmm... We want people to visit our application, not to go shopping. 
 
-Connect Amazon CloudFront to the correct origin in order for the application to work! 
+Connect Amazon CloudFront to the correct origin in order for your application to work! 
 
 It seems like the correct origin should be the Application Load Balancer (ALB) that is fronting your Amazon EC2 instances. The ALB has already been provisioned for you.
 """
@@ -105,7 +107,7 @@ TASK2_MARKDOWN=True
 
 
 TASK2_COMPLETE_KEY="task2_complete"
-TASK2_COMPLETE_LABEL="CloudFront origin attachment: Passed!"
+TASK2_COMPLETE_LABEL="Task 2: CloudFront origin attachment - Passed!"
 TASK2_COMPLETE_VALUE="""
 Phew! That was close, our customers can access the application now. 
 
