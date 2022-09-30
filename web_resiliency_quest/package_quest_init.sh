@@ -53,13 +53,13 @@ echo -e "\nUploading additional Quest artifacts to S3"
 cd ${QUEST_ROOT_DIR}
 aws s3 cp artifacts/images/sample_log.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/sample_log.png ${PROFILE_ARGUMENT}
 aws s3 cp artifacts/images/architecture_task0.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task0.png ${PROFILE_ARGUMENT}
-aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task2.png ${PROFILE_ARGUMENT}
-aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task3.png ${PROFILE_ARGUMENT}
-aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task5.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/architecture_task2.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task2.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/architecture_task3.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task3.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/architecture_task5.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task5.png ${PROFILE_ARGUMENT}
 aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/cf_console_task1.png ${PROFILE_ARGUMENT}
-aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/cloudwatch_metrics.png ${PROFILE_ARGUMENT}
-aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/robot_queue_image.png ${PROFILE_ARGUMENT}
-aws s3 cp artifacts/images/cf_console_task1.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_final.png ${PROFILE_ARGUMENT}  
+aws s3 cp artifacts/images/cloudwatch_metrics.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/cloudwatch_metrics.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/robot_queue_image.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/robot_queue_image.png ${PROFILE_ARGUMENT}
+aws s3 cp artifacts/images/architecture_final.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_final.png ${PROFILE_ARGUMENT}  
 
 
 echo Complete: $(date)
