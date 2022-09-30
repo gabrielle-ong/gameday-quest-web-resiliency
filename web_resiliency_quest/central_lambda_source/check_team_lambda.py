@@ -518,7 +518,7 @@ def calculate_bonus_points(quests_api_client, quest_id, team_data):
 
 # Check if participant is within time limit
 def is_within_quest_duration(team_data):
-    time_limit = 1
+    time_limit = 45
 
     start_time = datetime.fromtimestamp(team_data['quest-start-time'])
 
