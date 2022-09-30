@@ -52,6 +52,10 @@ def lambda_handler(event, context):
     # Make a copy of the original array to be able later on to do a comparison and validate whether a DynamoDB update is needed    
     team_data = dynamodb_response['Item'].copy() # Check init_lambda for the format
 
+    # Check if quest is running within time limit
+    if not is_within_quest_duration(team_data):
+        quests_api_client.post_quest_complete(team_id=team_data['team-id'], quest_id=QUEST_ID)
+
     # Task 0 to start continuous scoring
     team_data = continuous_scoring(quests_api_client, team_data)
 
@@ -491,31 +495,6 @@ def check_and_complete_quest(quests_api_client, quest_id, team_data):
     return team_data
 
 
-# Checks whether the chaos event timer is up by calculating the difference between the current time and 
-# the timer's start time plus the minutes to trigger the chaos event
-def is_chaos_timer_up(timer_start_time, timer_minutes):
-
-    # Timer start time
-    start_time = datetime.fromtimestamp(timer_start_time)
-
-    # Current time
-    current_time = datetime.now()
-
-    # Time difference
-    time_diff = current_time - start_time
-    
-    # Time difference in minutes
-    minutes = int(time_diff.total_seconds() / 60)
-
-    if minutes >= timer_minutes:
-        print(f"Chaos event timer is up: {minutes} minutes have elapsed")
-        return True
-    else:
-        print(f"No time for chaos event yet: {timer_minutes - minutes} minutes left")
-
-    return False
-
-
 # Calculate quest completion bonus points
 # This is to reward teams that complete the quest faster
 def calculate_bonus_points(quests_api_client, quest_id, team_data):
@@ -536,3 +515,24 @@ def calculate_bonus_points(quests_api_client, quest_id, team_data):
     print(f"Bonus points on {scoring_const.QUEST_COMPLETE_POINTS} done in {minutes} minutes: {bonus_points}")
 
     return bonus_points
+
+# Check if participant is within time limit
+def is_within_quest_duration(team_data):
+    time_limit = 1
+
+    start_time = datetime.fromtimestamp(team_data['quest-start-time'])
+
+    current_time = datetime.now()
+
+    # Time difference
+    time_diff = current_time - start_time
+
+    # Time difference in minutes
+    minutes = int(time_diff.total_seconds() / 60)
+
+    print(f"Quest total time = {start_time} - {current_time} = {minutes}")
+
+    if minutes > time_limit:
+        return False
+
+    return True
