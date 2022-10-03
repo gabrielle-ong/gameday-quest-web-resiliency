@@ -10,7 +10,7 @@ BUILD_QUEST_BUCKET_NAME=${QDK_ASSETS_BUCKET}                              # when
 #BUILD_QUEST_BUCKET_NAME=ee-assets-prod-us-east-1                         # when deploying to production
 # Include trailing / if a value is defined!
 BUILD_QUEST_BUCKET_PREFIX=web_resiliency_quest/                           # when deploying locally
-#BUILD_QUEST_BUCKET_PREFIX=modules/9c0e89820b864addaed45ec2f5440379/v5/   # when deploying to production
+#BUILD_QUEST_BUCKET_PREFIX=modules/9c0e89820b864addaed45ec2f5440379/v3/   # when deploying to production
 
 QUEST_ARTIFACTS_ZIP=gdQuests-${BUILD_QUEST_ID}-quest-artifacts.zip        # don't change
 
@@ -51,7 +51,6 @@ aws s3 cp ${QUEST_ARTIFACTS_ZIP} s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_B
 
 echo -e "\nUploading additional Quest artifacts to S3"
 cd ${QUEST_ROOT_DIR}
-aws s3 cp artifacts/images/sample_log.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/sample_log.png ${PROFILE_ARGUMENT}
 aws s3 cp artifacts/images/architecture_task0.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task0.png ${PROFILE_ARGUMENT}
 aws s3 cp artifacts/images/architecture_task2.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task2.png ${PROFILE_ARGUMENT}
 aws s3 cp artifacts/images/architecture_task3.png s3://${BUILD_QUEST_BUCKET_NAME}/${BUILD_QUEST_BUCKET_PREFIX}${BUILD_QUEST_ID}/architecture_task3.png ${PROFILE_ARGUMENT}

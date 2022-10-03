@@ -136,13 +136,13 @@ file of network traffic.
 
 Do you know which IP address is the attack coming from?
 ```
-#Fields: date time x-edge-location sc-bytes c-ip cs-method cs(Host) cs-uri-stem sc-status
-2022-11-04 21:02:31 LAX1 392 52.23.186.156 GET d111111abcdef8.cloudfront.net /index.html 200
-2022-11-04 21:02:31 LAX1 392 52.23.186.156 GET d111111abcdef8.cloudfront.net /index.html 200
-2022-11-04 21:02:31 LAX1 392 52.23.186.156 GET d111111abcdef8.cloudfront.net /index.html 200
-2022-11-13 22:36:27 SEA19-C1 900 52.23.186.156 GET d111111abcdef8.cloudfront.net /favicon.ico 502
-2022-11-13 22:36:26 SEA19-C1 900 52.23.186.156 GET d111111abcdef8.cloudfront.net / 502
-2022-11-13 22:37:02 SEA19-C2 900 52.23.186.156 GET d111111abcdef8.cloudfront.net / 502
+#Fields: date time ... cs-method cs(Host) cs-uri-stem sc-status ... x-forwarded-for
+2022-11-04 21:02:31  ... GET {} /index.html 200 ... 52.23.186.156
+2022-11-04 21:02:31  ... GET <REPLACE> /index.html 200 ... 52.23.186.156
+2022-11-04 21:02:31  ... GET <REPLACE> /index.html 200 ... 52.23.186.156
+2022-11-13 22:36:27  ... GET <REPLACE> /favicon.ico 502 ... 52.23.186.156
+2022-11-13 22:36:26  ... GET <REPLACE> / 502 ... 52.23.186.156
+2022-11-13 22:37:02  ... GET <REPLACE> / 502 ... 52.23.186.156
 ```
 """
 TASK4_INDEX=40

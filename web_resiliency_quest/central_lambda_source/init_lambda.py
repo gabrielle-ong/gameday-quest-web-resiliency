@@ -71,6 +71,12 @@ def lambda_handler(event, context):
     )
     print(f"Created team {team_id} in {QUEST_TEAM_STATUS_TABLE}. Response: {json.dumps(dynamo_put_response, default=str)}")
 
+    # Get CloudFront Distribution url
+    xa_session = quests_api_client.assume_team_ops_role(str(team_id))
+    cloudfront_client = xa_session.client('cloudfront')
+    cloudfront_response = cloudfront_client.get_distribution(Id=cloudfront_distribution_id)
+    cfDomainName = cloudfront_response['Distribution']['DomainName']
+
     # Post welcome message to the team
     image_url_welcome_1 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}robot_queue_image.png",signed_duration=86400)
 
@@ -196,7 +202,7 @@ def lambda_handler(event, context):
         quest_id=QUEST_ID,
         key=output_const.TASK4_KEY,
         label=output_const.TASK4_LABEL,
-        value=output_const.TASK4_VALUE,
+        value=output_const.TASK4_VALUE.format(cfDomainName),
         dashboard_index=output_const.TASK4_INDEX,
         markdown=output_const.TASK4_MARKDOWN,
     )
