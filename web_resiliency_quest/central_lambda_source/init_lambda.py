@@ -202,7 +202,7 @@ def lambda_handler(event, context):
         quest_id=QUEST_ID,
         key=output_const.TASK4_KEY,
         label=output_const.TASK4_LABEL,
-        value=output_const.TASK4_VALUE.format(cfDomainName),
+        value=output_const.TASK4_VALUE.format(cfDomainName, cfDomainName, cfDomainName, cfDomainName, cfDomainName, cfDomainName),
         dashboard_index=output_const.TASK4_INDEX,
         markdown=output_const.TASK4_MARKDOWN,
     )

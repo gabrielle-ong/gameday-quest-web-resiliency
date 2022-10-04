@@ -138,11 +138,11 @@ Do you know which IP address is the attack coming from?
 ```
 #Fields: date time ... cs-method cs(Host) cs-uri-stem sc-status ... x-forwarded-for
 2022-11-04 21:02:31  ... GET {} /index.html 200 ... 52.23.186.156
-2022-11-04 21:02:31  ... GET <REPLACE> /index.html 200 ... 52.23.186.156
-2022-11-04 21:02:31  ... GET <REPLACE> /index.html 200 ... 52.23.186.156
-2022-11-13 22:36:27  ... GET <REPLACE> /favicon.ico 502 ... 52.23.186.156
-2022-11-13 22:36:26  ... GET <REPLACE> / 502 ... 52.23.186.156
-2022-11-13 22:37:02  ... GET <REPLACE> / 502 ... 52.23.186.156
+2022-11-04 21:02:31  ... GET {} /index.html 200 ... 52.23.186.156
+2022-11-04 21:02:31  ... GET {} /index.html 200 ... 52.23.186.156
+2022-11-13 22:36:27  ... GET {} /favicon.ico 502 ... 52.23.186.156
+2022-11-13 22:36:26  ... GET {} / 502 ... 52.23.186.156
+2022-11-13 22:37:02  ... GET {} / 502 ... 52.23.186.156
 ```
 """
 TASK4_INDEX=40
