@@ -53,11 +53,12 @@ def lambda_handler(event, context):
     team_data = dynamodb_response['Item'].copy() # Check init_lambda for the format
 
     # Check if quest is running within time limit
-    if not is_within_quest_duration(team_data):
-        quests_api_client.post_quest_complete(team_id=team_data['team-id'], quest_id=QUEST_ID)
+    # if not is_within_quest_duration(team_data):
+    #     quests_api_client.post_quest_complete(team_id=team_data['team-id'], quest_id=QUEST_ID)
 
     # Task 0 to start continuous scoring
-    team_data = continuous_scoring(quests_api_client, team_data)
+    if is_within_quest_duration(team_data):
+        team_data = continuous_scoring(quests_api_client, team_data)
 
     # Task 1 is check cloudfront origin
 
@@ -195,7 +196,6 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
 
         # Lookup events in CloudFront
         cloudfront_client = xa_session.client('cloudfront')
-        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
         # cloudfront_response = cloudfront_client.list_distributions()
         # distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
         # cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
@@ -273,7 +273,6 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
 
         # Lookup events in WAF IP Sets
         waf_client = xa_session.client('wafv2')
-        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
         waf_ip_set_response = waf_client.list_ip_sets(Scope="CLOUDFRONT")
         ip_sets = waf_ip_set_response['IPSets']
         for ip_set in ip_sets:
@@ -286,7 +285,6 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                     break
         
         # Lookup events in WAF WebACL
-        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
         waf_web_acls_response = waf_client.list_web_acls(Scope="CLOUDFRONT")
         web_acls = waf_web_acls_response['WebACLs']
         for web_acl in web_acls:
@@ -314,7 +312,6 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
             team_data['is-cloudfront-ip-set-created'] = True
             # Lookup events in CloudFront
             cloudfront_client = xa_session.client('cloudfront')
-            quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
             # cloudfront_response = cloudfront_client.list_distributions()
             # distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
             # cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
@@ -379,7 +376,6 @@ def evaluate_cloudwatch_alarm(quests_api_client, team_data):
 
         # Lookup events in WAF IP Sets
         cloudwatch_client = xa_session.client('cloudwatch')
-        quest_start = datetime.fromtimestamp(team_data['quest-start-time'])
         cloudwatch_metrics_response = cloudwatch_client.describe_alarms_for_metric(
             MetricName="Requests",
             Namespace="AWS/CloudFront",
