@@ -501,14 +501,10 @@ Resources:
             OriginProtocolPolicy: http-only
         Enabled: 'true'
         DefaultCacheBehavior:
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # CachingDisabled
           TargetOriginId: defaultOrigin
-          ForwardedValues:
-            QueryString: 'false'
-            Cookies:
-              Forward: all
           ViewerProtocolPolicy: allow-all
         WebACLId: !GetAtt WebApplicationFirewall.Arn
-
 
 Outputs:
   # This section modifies the team's TeamRole IAM role to restrict the listed actions on the specified resources.

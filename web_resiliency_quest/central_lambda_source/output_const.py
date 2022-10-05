@@ -47,7 +47,10 @@ TASK1_LABEL="Task 1: What is CloudFront distribution origin pointing to?"
 TASK1_VALUE="""
 *BEEP BOOP* - Your first task from RoboVax is here! It seems like our customers are complaining that they are unable to
 connect to the application. Quick! Find out which origin (URL) our content delivery network, Amazon CloudFront is currently pointing to.
-The Amazon CloudFront service web page should look something like this:
+
+Click your CloudFront Distribution Domain Name, {}, to see where it brings you to. 
+
+Check your answer by visiting the Amazon Cloudfront service console, which looks something like this:
 
 ![cf_console_task1]({})
 """
@@ -69,7 +72,7 @@ TASK1_CORRECT_ORIGIN_MARKDOWN=True
 
 # TASK 2 - CloudFront distribution change-origin
 TASK2_KEY="task2"
-TASK2_LABEL="Task 2: Configure the CloudFront distribution origin to your application"
+TASK2_LABEL="## Task 2: Configure the CloudFront distribution origin to your application"
 TASK2_VALUE="""
 Hmm... We want people to visit our application, not to go shopping. 
 
@@ -83,11 +86,9 @@ TASK2_MARKDOWN=True
 TASK2_COMPLETE_KEY="task2_complete"
 TASK2_COMPLETE_LABEL="Task 2: CloudFront origin attachment - Passed!"
 TASK2_COMPLETE_VALUE="""
-Phew! That was close! Visit your Cloudfront domain name (ending in cloudfront.net)
+Phew! That was close! Now visit your Cloudfront Distribution Domain Name again, {}, and see where it brings you.
 
 This time, it should open our custom application site instead of www.amazon.com. 
-
-This step is needed for Task 6, so please visit your Amazon CloudFront URL!
 
 Here is the current architecture:
 
@@ -207,7 +208,7 @@ Notice which metric is spiking? Pick the right metric that identifies high traff
 
 In your Amazon CloudWatch service dashboard, set up a CloudWatch alarm for this particular metric. Be sure to choose the metric for the correct Cloudwatch distribution!
 
-_Note: If you're unable to find CloudWatch metrics for your distribution, please visit your CloudFront domain name URL. You might have done this as instructed after Task 2 (thank you for listening). The metrics should show up after 1-2 minutes of your visit._
+_Note: If you're unable to find CloudWatch metrics for your distribution, please visit your CloudFront Domain Name URL, {}. You might have already done this in Task 1 and Task 2. The metrics should show up after 1-2 minutes of your visit._
 
 To configure the alarm, measure the average of this metric over 5 minutes. Set the alarm to be in alarm state using Anomaly detection, whenever RequestCount is Outside of the Band of threshold 2.
 
