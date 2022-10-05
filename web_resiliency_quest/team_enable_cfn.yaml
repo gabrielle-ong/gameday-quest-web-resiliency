@@ -479,7 +479,7 @@ Resources:
         SampledRequestsEnabled: true
         CloudWatchMetricsEnabled: true
         MetricName: ExampleWebACLMetric
-
+  
   # SNS Topic
   SNS:
     Type: AWS::SNS::Topic
@@ -507,6 +507,7 @@ Resources:
             Cookies:
               Forward: all
           ViewerProtocolPolicy: allow-all
+        WebACLId: !GetAtt WebApplicationFirewall.Arn
 
 
 Outputs:

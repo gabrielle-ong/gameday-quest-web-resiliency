@@ -228,12 +228,14 @@ def lambda_handler(event, context):
     )
 
     # TASK 5
+    image_url_task5 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}waf_console.png",signed_duration=86400)
+
     quests_api_client.post_output(
         team_id=team_id,
         quest_id=QUEST_ID,
         key=output_const.TASK5_KEY,
         label=output_const.TASK5_LABEL,
-        value=output_const.TASK5_VALUE,
+        value=output_const.TASK5_VALUE.format(image_url_task5),
         dashboard_index=output_const.TASK5_INDEX,
         markdown=output_const.TASK5_MARKDOWN,
     )
@@ -244,7 +246,7 @@ def lambda_handler(event, context):
     #     label=input_const.TASK3_READY_LABEL,
     #     dashboard_index=input_const.TASK3_READY_INDEX
     # )
-
+    
     quests_api_client.post_hint(
         team_id=team_data['team-id'],
         quest_id=QUEST_ID,
