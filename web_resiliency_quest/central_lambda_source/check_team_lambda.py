@@ -374,6 +374,8 @@ def evaluate_cloudwatch_alarm(quests_api_client, team_data):
     if not team_data['is-cloudwatch-alarm-created']:
         print("TASK 6 START")
         
+        alarms_with_metrics = []
+        metrics_cloudfront = []
         alarm_flag = False
 
         # Establish cross-account session
@@ -382,24 +384,41 @@ def evaluate_cloudwatch_alarm(quests_api_client, team_data):
 
         # Lookup events in WAF IP Sets
         cloudwatch_client = xa_session.client('cloudwatch')
-        cloudwatch_metrics_response = cloudwatch_client.describe_alarms_for_metric(
-            MetricName="Requests",
-            Namespace="AWS/CloudFront",
-            Dimensions=[
-                {
-                   "Name":"Region",
-                   "Value":"Global"
-                },
-                {
-                    'Name': 'DistributionId',
-                    'Value': team_data['cloudfront-distribution-id']
-                },
-            ]
-        )
-
+        # cloudwatch_metrics_response = cloudwatch_client.describe_alarms_for_metric(
+        #     MetricName="Requests",
+        #     Namespace="AWS/CloudFront",
+            # Dimensions=[
+            #     {
+            #       "Name":"Region",
+            #       "Value":"Global"
+            #     },
+            #     {
+            #         'Name': 'DistributionId',
+            #         'Value': team_data['cloudfront-distribution-id']
+            #     },
+            # ]
+        # )
+        cloudwatch_metrics_response = cloudwatch_client.describe_alarms()
+        cloudwatch_metric_alarms = cloudwatch_metrics_response['MetricAlarms']
         
-        if cloudwatch_metrics_response['MetricAlarms']:
-            alarm_flag = True
+        # find for alarms with metrics
+        for alarm in cloudwatch_metric_alarms:
+            if 'Metrics' in alarm:
+                alarms_with_metrics.append(alarm)
+        
+        # find for alarms with cloudfront metrics
+        for alarm in alarms_with_metrics:
+            for metric in alarm['Metrics']:
+                if 'MetricStat' in metric:
+                    if metric['MetricStat']['Metric']['Namespace'] == 'AWS/CloudFront' and metric['MetricStat']['Metric']['MetricName'] == 'Requests':
+                        metrics_cloudfront.append(metric)
+        
+        # find for metrics for cloudfront distribution
+        for metric in metrics_cloudfront:
+            for dimension in metric['MetricStat']['Metric']['Dimensions']:
+                if dimension['Name'] == 'DistributionId':
+                    if dimension['Value'] == team_data['cloudfront-distribution-id']:
+                        alarm_flag = True
 
         
         # Complete task if WebACL was attached

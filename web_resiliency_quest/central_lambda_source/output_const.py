@@ -173,6 +173,7 @@ Quickly set up an AWS Web Application Firewall (WAF) to block this IP address be
 This task is your biggest task (yet). Here are some tips:
 * The WAF Web ACL for CloudFront has already been created for you, named _waf-web-acl_. In the Web ACL dashboard, change the dropdown region to Global (CloudFront) to see it.
 * In this Web ACL, you will create an IP Set and your own WAF Rule to block this IP address.
+
 ![waf_console]({})
 """
 TASK5_INDEX=50
