@@ -17,24 +17,25 @@ TASK1_HINT1_COST=200
 TASK2_HINT1_KEY="task2_hint1"
 TASK2_HINT1_LABEL="Need help?"
 TASK2_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK2_HINT1_VALUE="Click into your Amazon CloudFront distribution to edit its “Origins” to point to the Application Load Balancer (ALB). "
+TASK2_HINT1_VALUE="""
+1. Click into your Amazon CloudFront distribution and select the “Origins” tab.
+
+2. Edit the defaultOrigin and change origin domain to point to your Elastic Load Balancer (ELB).
+
+"""
 TASK2_HINT1_INDEX=26
 TASK2_HINT1_COST=500
-
-
-# # TASK 2 HINTS
-# TASK2_HINT1_KEY="task2_hint1"
-# TASK2_HINT1_LABEL="Having difficulty finding CloudShell?"
-# TASK2_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-# TASK2_HINT1_VALUE="Ensure that you have navigated to your team's AWS Console. Then click on 'Services' in the upper left and find 'CloudShell'."
-# TASK2_HINT1_INDEX=27
-# TASK2_HINT1_COST=200
 
 # TASK 3 HINTS
 TASK3_HINT1_KEY="task3_hint1"
 TASK3_HINT1_LABEL="Need help?"
 TASK3_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK3_HINT1_VALUE="Go to your Amazon CloudFront Distribution and edit its settings. Thereafter, look for the “standard logging” checkbox which you will the link up to your Amazon S3 bucket."
+TASK3_HINT1_VALUE="""
+1. Go to your Amazon CloudFront Distribution and edit its settings.
+
+2. Check the “Standard logging” checkbox which you will then link it to your Amazon S3 bucket.
+
+"""
 TASK3_HINT1_INDEX=37
 TASK3_HINT1_COST=500
 
@@ -42,7 +43,7 @@ TASK3_HINT1_COST=500
 TASK4_HINT1_KEY="task4_hint1"
 TASK4_HINT1_LABEL="Need help?"
 TASK4_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK4_HINT1_VALUE="Look at what the source IP address is."
+TASK4_HINT1_VALUE="Look at what the x-forwarded-for IP address is."
 TASK4_HINT1_INDEX=46
 TASK4_HINT1_COST=500
 
@@ -51,13 +52,16 @@ TASK5_HINT1_KEY="task5_hint1"
 TASK5_HINT1_LABEL="Need help?"
 TASK5_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
 TASK5_HINT1_VALUE="""
-Using the IP address identified in Task 4, create an IP Set on AWS WAF. 
+1. Using the IP address identified in Task 4, create an IP Set on AWS WAF. To include the malicious IP address, input '52.23.186.156/32'.
 
-Once created, go to the Web ACL that has already been pre-created for you. 
+2. Once created, go to the Web ACL that has already been pre-created for you. 
 
-Under Rules, go to “Add my own rules and rule groups” to create a rule that blocks the IP Set created earlier. 
+3. Go to the Rules tab, click "Add rules" and select “Add my own rules and rule groups”. 
 
-Once done, go to “Associated AWS resources” and add your Amazon CloudFront distribution. This will attach the AWS WAF rule to your Amazon CloudFront distribution.
+4. Select rule type of "IP Set" and choose the IP Set that was created earlier.
+
+5. Ensure that the Action is "Block".
+
 """
 TASK5_HINT1_INDEX=57
 TASK5_HINT1_COST=500
@@ -68,9 +72,19 @@ TASK6_HINT1_KEY="task6_hint1"
 TASK6_HINT1_LABEL="Need help?"
 TASK6_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
 TASK6_HINT1_VALUE="""
-On the graph, there seems to be a spike in the metric called “CloudFront - Request”.
+1. On the graph, there seems to be a spike in the metric called “CloudFront - Request”.
 
-Head to Amazon CloudWatch to set up an alarm with these metrics so that we will always be notified of any large spike in traffic.
+2. Head to Amazon CloudWatch, expand "Alarms" in the menu on the left. Select "All alarms" and choose "Create alarm".
+
+3. Click "Select Metric". Select or search for "CloudFront", then "Per-Distribution Metrics".
+
+4. There may be many metrics listed under "Browse". Search for your CloudFront distribution ID, and the "Requests" metric. If you do not know your CloudFront distribution ID, visit the CloudFront dashboard to check the distribution ID.
+
+5. Select this metric. Under Specify metric and conditions, select "Anomaly detection" whever requests is "Outside of the band" of "2"
+
+6. Under Configure actions, select the alarm state trigger to be "In alarm". Send a notification to an "existing SNS topic", and select "SNS-topic-for-cloudwatch-alarm". You can leave the endpoints empty.
+
+7. Name your alarm, press Next. Lastly, preview your settings and select "Create alarm".
 """
 TASK6_HINT1_INDEX=67
 TASK6_HINT1_COST=500

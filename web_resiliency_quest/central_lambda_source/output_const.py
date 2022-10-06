@@ -48,7 +48,7 @@ TASK1_VALUE="""
 *BEEP BOOP* - Your first task from RoboVax is here! It seems like our customers are complaining that they are unable to
 connect to the application. Quick! Find out which origin (URL) our content delivery network, Amazon CloudFront is currently pointing to.
 
-Click your CloudFront Distribution Domain Name, {}, to see where it brings you to. 
+Visit your CloudFront Distribution Domain Name, {}, to see where it brings you to. 
 
 Check your answer by visiting the Amazon Cloudfront service console, which looks something like this:
 
@@ -72,7 +72,7 @@ TASK1_CORRECT_ORIGIN_MARKDOWN=True
 
 # TASK 2 - CloudFront distribution change-origin
 TASK2_KEY="task2"
-TASK2_LABEL="## Task 2: Configure the CloudFront distribution origin to your application"
+TASK2_LABEL="Task 2: Configure the CloudFront distribution origin to your application"
 TASK2_VALUE="""
 Hmm... We want people to visit our application, not to go shopping. 
 
@@ -86,7 +86,10 @@ TASK2_MARKDOWN=True
 TASK2_COMPLETE_KEY="task2_complete"
 TASK2_COMPLETE_LABEL="Task 2: CloudFront origin attachment - Passed!"
 TASK2_COMPLETE_VALUE="""
-Phew! That was close! Now visit your Cloudfront Distribution Domain Name again, {}, and see where it brings you.
+Phew! That was close!
+
+If you'd like, you can visit your Cloudfront Distribution Domain Name again, {}, in a new private browser to avoid your browser's
+cache.
 
 This time, it should open our custom application site instead of www.amazon.com. 
 

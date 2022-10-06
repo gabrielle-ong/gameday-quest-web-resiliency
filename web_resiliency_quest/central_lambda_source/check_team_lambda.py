@@ -142,9 +142,9 @@ def attach_cloudfront_origin(quests_api_client, team_data):
 
             # Post task final message
             # Get CloudFront Distribution url
-            xa_session = quests_api_client.assume_team_ops_role(str(team_id))
+            xa_session = quests_api_client.assume_team_ops_role(team_data['team-id'])
             cloudfront_client = xa_session.client('cloudfront')
-            cloudfront_response = cloudfront_client.get_distribution(Id=cloudfront_distribution_id)
+            cloudfront_response = cloudfront_client.get_distribution(Id=team_data['cloudfront-distribution-id'])
             cfDomainName = cloudfront_response['Distribution']['DomainName']
 
             image_url_task2 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task2.png",signed_duration=86400)
