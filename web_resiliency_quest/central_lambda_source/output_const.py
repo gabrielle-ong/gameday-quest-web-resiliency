@@ -48,7 +48,7 @@ TASK1_VALUE="""
 *BEEP BOOP* - Your first task from RoboVax is here! It seems like our customers are complaining that they are unable to
 connect to the application. Quick! Find out which origin (URL) our content delivery network, Amazon CloudFront is currently pointing to.
 
-Visit your CloudFront Distribution Domain Name, {}, to see where it brings you to. 
+Visit your CloudFront Distribution Domain Name, [{}](https://{}), to see where it brings you to. 
 
 Check your answer by visiting the Amazon Cloudfront service console, which looks something like this:
 
@@ -88,7 +88,7 @@ TASK2_COMPLETE_LABEL="Task 2: CloudFront origin attachment - Passed!"
 TASK2_COMPLETE_VALUE="""
 Phew! That was close!
 
-If you'd like, you can visit your Cloudfront Distribution Domain Name again, {}, in a new private browser to avoid your browser's
+If you'd like, you can visit your Cloudfront Distribution Domain Name again, [{}](https://{}), in a new private browser to avoid your browser's
 cache.
 
 This time, it should open our custom application site instead of www.amazon.com. 
@@ -212,7 +212,7 @@ Notice which metric is spiking? Pick the right metric that identifies high traff
 
 In your Amazon CloudWatch service dashboard, set up a CloudWatch alarm for this particular metric. Be sure to choose the metric for the correct Cloudwatch distribution!
 
-_Note: If you're unable to find CloudWatch metrics for your distribution, please visit your CloudFront Domain Name URL, {}. You might have already done this in Task 1 and Task 2. The metrics should show up after 1-2 minutes of your visit._
+_Note: If you're unable to find CloudWatch metrics for your distribution, please visit your CloudFront Domain Name URL, [{}](https://{}). You might have already done this in Task 1 and Task 2. The metrics should show up after 1-2 minutes of your visit._
 
 To configure the alarm, measure the average of this metric over 5 minutes. Set the alarm to be in alarm state using Anomaly detection, whenever RequestCount is Outside of the Band of threshold 2.
 

@@ -110,7 +110,7 @@ def lambda_handler(event, context):
         quest_id=QUEST_ID,
         key=output_const.TASK1_KEY,
         label=output_const.TASK1_LABEL,
-        value=output_const.TASK1_VALUE.format(cfDomainName, image_url_task1),
+        value=output_const.TASK1_VALUE.format(cfDomainName, cfDomainName, image_url_task1),
         dashboard_index=output_const.TASK1_INDEX,
         markdown=output_const.TASK1_MARKDOWN,
     )
@@ -267,7 +267,7 @@ def lambda_handler(event, context):
         quest_id=QUEST_ID,
         key=output_const.TASK6_KEY,
         label=output_const.TASK6_LABEL,
-        value=output_const.TASK6_VALUE.format(image_url_task6, cfDomainName),
+        value=output_const.TASK6_VALUE.format(image_url_task6, cfDomainName, cfDomainName),
         dashboard_index=output_const.TASK6_INDEX,
         markdown=output_const.TASK6_MARKDOWN,
     )

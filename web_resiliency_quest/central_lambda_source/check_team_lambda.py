@@ -154,7 +154,7 @@ def attach_cloudfront_origin(quests_api_client, team_data):
                 quest_id=QUEST_ID,
                 key=output_const.TASK2_COMPLETE_KEY,
                 label=output_const.TASK2_COMPLETE_LABEL,
-                value=output_const.TASK2_COMPLETE_VALUE.format(cfDomainName, image_url_task2), 
+                value=output_const.TASK2_COMPLETE_VALUE.format(cfDomainName, cfDomainName, image_url_task2), 
                 dashboard_index=output_const.TASK2_COMPLETE_INDEX,
                 markdown=output_const.TASK2_COMPLETE_MARKDOWN,
             )
