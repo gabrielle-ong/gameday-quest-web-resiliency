@@ -120,69 +120,69 @@ Resources:
       ServiceToken: !GetAtt ResourceLookupLambda.Arn
 
   # Creating the VPC
-  3TierVPC:
-    Type: 'AWS::EC2::VPC'
-    Properties:
-      CidrBlock: 10.1.0.0/16
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      Tags:
-        - Key: Name
-          Value: !Join
-            - ''
-            - - !Ref 'AWS::StackName'
-              - '-3TierVPC'
+  # 3TierVPC:
+  #   Type: 'AWS::EC2::VPC'
+  #   Properties:
+  #     CidrBlock: 10.1.0.0/16
+  #     EnableDnsSupport: true
+  #     EnableDnsHostnames: true
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Join
+  #           - ''
+  #           - - !Ref 'AWS::StackName'
+  #             - '-3TierVPC'
 
   # Route Table
   RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
 
    # Creating an Internet Gateway
-  InternetGateway:
-    Type: 'AWS::EC2::InternetGateway'
-    DependsOn: '3TierVPC'
+  # InternetGateway:
+  #   Type: 'AWS::EC2::InternetGateway'
+  #   DependsOn: '3TierVPC'
 
   # InternetGatewayAttachment to VPC
-  InternetGatewayAttachment:
-    Type: 'AWS::EC2::VPCGatewayAttachment'
-    Properties:
-      VpcId: !Ref '3TierVPC'
-      InternetGatewayId: !Ref InternetGateway
+  # InternetGatewayAttachment:
+  #   Type: 'AWS::EC2::VPCGatewayAttachment'
+  #   Properties:
+  #     VpcId: !Ref '3TierVPC'
+  #     InternetGatewayId: !Ref InternetGateway
 
   # Create Public Subnet One
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       AvailabilityZone: us-east-1a
-      CidrBlock: 10.1.0.0/20
+      CidrBlock: 172.31.128.0/20
       MapPublicIpOnLaunch: true
 
   # Create Public Subnet Two
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       AvailabilityZone: us-east-1b
-      CidrBlock: 10.1.16.0/20
+      CidrBlock: 172.31.144.0/20
       MapPublicIpOnLaunch: true
 
   # Create VPC Route Table
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
 
   # Create PublicRoute
   PublicRoute:
     Type: AWS::EC2::Route
-    DependsOn: 'InternetGateway'
+    # DependsOn: 'InternetGateway'
     Properties:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
+      GatewayId: !GetAtt ResourceLookup.GatewayId
 
   # Associate Public Subnet One 
   PublicSubnet1RouteTableAssociation:
@@ -204,7 +204,7 @@ Resources:
     Properties:
       GroupName: SecurityGroup-07
       GroupDescription: Open HTTP (port 80) and SSH (port 22)
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -286,43 +286,43 @@ Resources:
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       AvailabilityZone: us-east-1a
-      CidrBlock: 10.1.32.0/20
+      CidrBlock: 172.31.160.0/20
       MapPublicIpOnLaunch: false
 
   # Create Private Subnet Two for App
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       AvailabilityZone: us-east-1b
-      CidrBlock: 10.1.48.0/20
+      CidrBlock: 172.31.176.0/20
       MapPublicIpOnLaunch: false
 
   # Create Private Subnet Three for DB
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       AvailabilityZone: us-east-1a
-      CidrBlock: 10.1.64.0/20
+      CidrBlock: 172.31.192.0/20
       MapPublicIpOnLaunch: false
 
   # Create Private Subnet Four for DB
   PrivateSubnet4:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       AvailabilityZone: us-east-1b
-      CidrBlock: 10.1.80.0/20
+      CidrBlock: 172.31.208.0/20
       MapPublicIpOnLaunch: false
 
  # Create Private Route Table
   PrivateRouteTable2:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
 
   # Create PrivateRoute
   # PrivateRoute2:
@@ -376,7 +376,7 @@ Resources:
     Properties:
       GroupName: SecurityGroup-08
       GroupDescription: Open HTTP (port 80) and SSH (port 22)
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -395,7 +395,7 @@ Resources:
     Properties:
       GroupName: ELBSecurityGroup
       GroupDescription: Open HTTP (port 80) and HTTPS (port 443)
-      VpcId: !Ref '3TierVPC'
+      VpcId: !GetAtt ResourceLookup.VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -409,7 +409,7 @@ Resources:
   # Create Application Load Balancer
   ElasticLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    DependsOn: 'InternetGateway'
+    # DependsOn: 'InternetGateway'
     Properties: 
       IpAddressType: ipv4
       # LoadBalancerAttributes: 
@@ -445,7 +445,7 @@ Resources:
       Protocol: HTTP
       TargetType: instance
       UnhealthyThresholdCount: 3
-      VpcId: !Ref "3TierVPC"
+      VpcId: !GetAtt ResourceLookup.VpcId
 
   # ELB Listener
   ELBListener:

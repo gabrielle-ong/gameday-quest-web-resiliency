@@ -1,5 +1,6 @@
 # Copyright 2022 Amazon.com and its affiliates; all rights reserved. 
 # This file is Amazon Web Services Content and may not be duplicated or distributed without permission.
+from pydoc import describe
 import boto3
 import urllib3
 import cfn_response
@@ -71,6 +72,12 @@ def lambda_handler(event, context):
                 },
                 ])
                 response_data["RouteTableId"] = route_tables["RouteTables"][0]["RouteTableId"]
+
+                internet_gateways = ec2_client.describe_internet_gateways(Filters=[{
+                    'Name': 'attachment.vpc-id',
+                    'Values': [vpc]
+                }])
+                response_data['GatewayId'] = internet_gateways['InternetGateways'][0]['InternetGatewayId']
 
                 print(f"Custom resource lambda execution for response_data: {response_data}")
 
