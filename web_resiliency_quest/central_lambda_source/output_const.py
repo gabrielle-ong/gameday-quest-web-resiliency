@@ -49,10 +49,6 @@ TASK1_VALUE="""
 connect to the application. Quick! Find out which origin (URL) our content delivery network, Amazon CloudFront is currently pointing to.
 
 Visit your CloudFront Distribution Domain Name, [{}](https://{}), to see where it brings you to. 
-
-Check your answer by visiting the Amazon Cloudfront service console, which looks something like this:
-
-![cf_console_task1]({})
 """
 TASK1_INDEX=10
 TASK1_MARKDOWN=True
@@ -77,6 +73,9 @@ TASK2_VALUE="""
 Hmm... We want people to visit our application, not to go shopping. 
 
 Connect Amazon CloudFront to the correct origin in order for your application to work! 
+
+Begin by visiting the Amazon Cloudfront service console, which looks something like this:
+![cf_console_task2]({})
 
 It seems like the correct origin should be the Application Load Balancer (ALB) that is fronting your Amazon EC2 instances. The ALB has already been provisioned for you.
 """
