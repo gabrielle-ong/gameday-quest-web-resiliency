@@ -75,9 +75,12 @@ Hmm... We want people to visit our application, not to go shopping.
 Connect Amazon CloudFront to the correct origin in order for your application to work! 
 
 Begin by visiting the Amazon Cloudfront service console, which looks something like this:
+
 ![cf_console_task2]({})
 
-It seems like the correct origin should be the Application Load Balancer (ALB) that is fronting your Amazon EC2 instances. The ALB has already been provisioned for you.
+It seems like the correct origin should be the Application Load Balancer (ALB) that is fronting your Amazon EC2 instances. 
+
+The ALB has already been provisioned for you, the ALB name would look similar to _WebResiliencyALB-XXX-XXX_.
 """
 TASK2_INDEX=20
 TASK2_MARKDOWN=True
@@ -133,11 +136,14 @@ TASK3_COMPLETE_MARKDOWN=True
 TASK4_KEY="task4"
 TASK4_LABEL="Task 4: Get malicious IP attacker address"
 TASK4_VALUE="""
-With logging enabled, now the logs will be recorded in the Amazon Simple Storage Service (S3) bucket. Well done!
-However, the bad actors are still trying to take down our Unicorn.Rentals application! We managed to obtain the generated log
-file of network traffic.
+With logging enabled, now the logs will be recorded in the Amazon Simple Storage Service (S3) bucket. 
+
+Logging may take some time. For simplicity, here is a sample Cloudfront log for you. 
+
+Our security team has identified that it is from a bad actor trying to take down our Unicorn.Rentals application!
 
 Do you know which IP address is the attack coming from?
+
 ```
 #Fields: date time ... cs-method cs(Host) cs-uri-stem sc-status ... x-forwarded-for
 2022-11-04 21:02:31  ... GET {} /index.html 200 ... 52.23.186.156
