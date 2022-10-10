@@ -414,7 +414,7 @@ Resources:
       IpAddressType: ipv4
       # LoadBalancerAttributes: 
       #   - LoadBalancerAttribute
-      Name: !Sub WebResiliencyALB-${AWS::AccountId}-${AWS::Region}
+      Name: WebResiliencyALB
       Scheme: internet-facing
       SecurityGroups: 
         - !Ref "ELBSecurityGroup"
