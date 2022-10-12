@@ -80,7 +80,7 @@ Begin by visiting the Amazon Cloudfront service console, which looks something l
 
 It seems like the correct origin should be the Application Load Balancer (ALB) that is fronting your Amazon EC2 instances. 
 
-The ALB has already been provisioned for you, the ALB name would look similar to _WebResiliencyALB-XXX-XXX_.
+The ALB has already been provisioned for you, the ALB name would look similar to _WebResiliencyALB_.
 """
 TASK2_INDEX=20
 TASK2_MARKDOWN=True
@@ -180,7 +180,8 @@ Quickly set up an AWS Web Application Firewall (WAF) to block this IP address be
 
 This task is your biggest task (yet). Here are some tips:
 * The WAF Web ACL for CloudFront has already been created for you, named _waf-web-acl_. In the Web ACL dashboard, change the dropdown region to Global (CloudFront) to see it.
-* In this Web ACL, you will create an IP Set and your own WAF Rule to block this IP address.
+* You will create an IP Set (in Global Cloudfront region) for the malicious IP identified in task 4.
+* Then, in _waf-web-acl_, create your own WAF Rule for an IP Set to block this IP address. 
 
 ![waf_console]({})
 """

@@ -9,7 +9,7 @@ STATUS_DISPLAYED="DISPLAYED"
 TASK1_HINT1_KEY="task1_hint1"
 TASK1_HINT1_LABEL="Need help identifying origin?"
 TASK1_HINT1_DESCRIPTION="If you're stuck, click on the Reveal Hint button to get some guidance"
-TASK1_HINT1_VALUE="Take a look at the origin that has been attached to CloudFront distribution"
+TASK1_HINT1_VALUE="Hmm taking the easy way eh? Visiting the link should bring you to www.amazon.com"
 TASK1_HINT1_INDEX=16
 TASK1_HINT1_COST=200
 
