@@ -52,10 +52,6 @@ def lambda_handler(event, context):
     # Make a copy of the original array to be able later on to do a comparison and validate whether a DynamoDB update is needed    
     team_data = dynamodb_response['Item'].copy() # Check init_lambda for the format
 
-    # Check if quest is running within time limit
-    # if not is_within_quest_duration(team_data):
-    #     quests_api_client.post_quest_complete(team_id=team_data['team-id'], quest_id=QUEST_ID)
-
     # Task 0 to start continuous scoring
     if is_within_quest_duration(team_data):
         team_data = continuous_scoring(quests_api_client, team_data)
@@ -72,9 +68,6 @@ def lambda_handler(event, context):
 
     # Task 5 evaluation
     team_data = evaluate_cloudfront_waf(quests_api_client, team_data)
-
-    # # Task 5 evaluation
-    # team_data = evaluate_access_key(quests_api_client, team_data)
 
     # Task 6 evaluation
     team_data = evaluate_cloudwatch_alarm(quests_api_client, team_data)
@@ -136,9 +129,6 @@ def attach_cloudfront_origin(quests_api_client, team_data):
                 hint_key=hint_const.TASK2_HINT1_KEY,
                 detail=True
             )
-            # Handling a response status code other than 200. In this case, we are just logging
-            # if response['statusCode'] != 200:
-            #     print(response)
 
             # Post task final message
             # Get CloudFront Distribution url
@@ -172,23 +162,6 @@ def attach_cloudfront_origin(quests_api_client, team_data):
 
     return team_data
 
-# # Checks whether the monitoring web app is up or done and returns True or False respectively
-# def check_webapp(team_data):
-#     try:
-#         print(f"Testing web app status")
-#         conn = http.client.HTTPConnection(team_data['ip-address'], timeout=5)
-#         conn.request("GET", "/index.html")
-#         res = conn.getresponse()
-#         data = res.read().decode("utf-8") 
-#         print(res.status)
-#         if res.status != 200:
-#             raise Exception(f"Web app down: {res.status} - {res.reason}")
-#         return True
-#     except Exception as e:
-#         print(f"Web app not available: {e}")
-#         return False
-
-
 # Task 3 evaluation - CloudFront logs
 def evaluate_cloudfront_logging(quests_api_client, team_data):
     print(f"Evaluating CloudFront Logs task for team {team_data['team-id']}")
@@ -202,9 +175,6 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
 
         # Lookup events in CloudFront
         cloudfront_client = xa_session.client('cloudfront')
-        # cloudfront_response = cloudfront_client.list_distributions()
-        # distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
-        # cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
         cloudfront_response = cloudfront_client.get_distribution(Id=team_data['cloudfront-distribution-id'])
         logging_flag = cloudfront_response['Distribution']['DistributionConfig']['Logging']['Enabled']
 
@@ -223,9 +193,6 @@ def evaluate_cloudfront_logging(quests_api_client, team_data):
                 hint_key=hint_const.TASK3_HINT1_KEY,
                 detail=True
             )
-            # Handling a response status code other than 200. In this case, we are just logging
-            # if response['statusCode'] != 200:
-            #     print(response)
 
             # Post task final message
             image_url_task3 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task3.png",signed_duration=86400)
@@ -306,21 +273,11 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
             if rule_ip_set['ARN'] == ip_set_arn:
                 waf_web_acl_flag = True
                 break
-
-            # rule_response = waf_client.get_rule_group(Name=rule['Name'], Scope="CLOUDFRONT")
-            # rule_predicates = rule_response['Rule']['Predicates']
-            # for predicate in rule_predicates:
-            #     if predicate['DataId'] == ip_set_id:
-            #         waf_web_acl_flag = True
-            #         break
         
         if ip_set_id != "" and waf_web_acl_flag:
             team_data['is-cloudfront-ip-set-created'] = True
             # Lookup events in CloudFront
             cloudfront_client = xa_session.client('cloudfront')
-            # cloudfront_response = cloudfront_client.list_distributions()
-            # distribution_id = cloudfront_response['DistributionList']['Items'][0]['Id']
-            # cloudfront_distribution_response = cloudfront_client.get_distribution(Id=distribution_id)
             cloudfront_response = cloudfront_client.get_distribution(Id=team_data['cloudfront-distribution-id'])
             cloudfront_web_acl_id = cloudfront_response['Distribution']['DistributionConfig']['WebACLId']
 
@@ -339,9 +296,6 @@ def evaluate_cloudfront_waf(quests_api_client, team_data):
                     hint_key=hint_const.TASK5_HINT1_KEY,
                     detail=True
                 )
-                # Handling a response status code other than 200. In this case, we are just logging
-                # if response['statusCode'] != 200:
-                #     print(response)
 
                 # Post task final message
                 image_url_task5 = ui_utils.generate_signed_or_open_url(ASSETS_BUCKET, f"{ASSETS_BUCKET_PREFIX}architecture_task5.png",signed_duration=86400)
@@ -384,20 +338,6 @@ def evaluate_cloudwatch_alarm(quests_api_client, team_data):
 
         # Lookup events in WAF IP Sets
         cloudwatch_client = xa_session.client('cloudwatch')
-        # cloudwatch_metrics_response = cloudwatch_client.describe_alarms_for_metric(
-        #     MetricName="Requests",
-        #     Namespace="AWS/CloudFront",
-            # Dimensions=[
-            #     {
-            #       "Name":"Region",
-            #       "Value":"Global"
-            #     },
-            #     {
-            #         'Name': 'DistributionId',
-            #         'Value': team_data['cloudfront-distribution-id']
-            #     },
-            # ]
-        # )
         cloudwatch_metrics_response = cloudwatch_client.describe_alarms()
         cloudwatch_metric_alarms = cloudwatch_metrics_response['MetricAlarms']
         
@@ -434,9 +374,6 @@ def evaluate_cloudwatch_alarm(quests_api_client, team_data):
                 hint_key=hint_const.TASK6_HINT1_KEY,
                 detail=True
             )
-            # Handling a response status code other than 200. In this case, we are just logging
-            # if response['statusCode'] != 200:
-            #     print(response)
 
             # Post task final message
             quests_api_client.post_output(
