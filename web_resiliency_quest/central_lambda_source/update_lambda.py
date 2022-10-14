@@ -50,7 +50,7 @@ def lambda_handler(event, context):
     print(f"Retrieved team state for team {event['team_id']}: {json.dumps(dynamodb_response, default=str)}")
     team_data = dynamodb_response['Item']
 
-    task1_origin = "www.amazon.com"
+    task1_origin = "amazon.com"
     task4_ip_address = "52.23.186.156"
 
     # Task 1 - Wrong origin domain
@@ -58,8 +58,7 @@ def lambda_handler(event, context):
         and not team_data['is-identified-origin']): # This second check is needed to avoid multiple submissions since points are being given here
 
         # Check team's input value
-        value = event['value'].strip().strip("http://") # Being forgiven if leading spaces, trailing spaces, or protocol were added
-        if value == task1_origin:
+        if task1_origin in event['value']: #Being forgiven if leading spaces, trailing spaces, or protocol were added
 
             # Correct answer - switch flag to true
             team_data['is-identified-origin'] = True
