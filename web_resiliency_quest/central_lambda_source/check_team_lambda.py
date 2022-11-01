@@ -425,6 +425,7 @@ def check_and_complete_quest(quests_api_client, quest_id, team_data):
 
         # Award quest complete bonus points
         bonus_points = calculate_bonus_points(quests_api_client, quest_id, team_data)
+        
         quests_api_client.post_score_event(
             team_id=team_data["team-id"],
             quest_id=quest_id,
