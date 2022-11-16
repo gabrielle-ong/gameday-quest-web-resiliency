@@ -219,7 +219,7 @@ Resources:
   LaunchTemplate:
     Type: 'AWS::EC2::LaunchTemplate'
     Properties:
-      LaunchTemplateName: !Sub '${AWS::StackName}-wp-launchTemplate4ASG'
+      LaunchTemplateName: !Sub '${AWS::StackName}-webresiliency-launchtemplate'
       LaunchTemplateData:
         NetworkInterfaces:
           - DeviceIndex: 0
@@ -236,11 +236,9 @@ Resources:
             yum install -y httpd wget git
             cd /tmp
             availabilityZone=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
-            git clone https://github.com/glendont/aws-multi-region-web.git
-            cp ./aws-multi-region-web/gameday-web/* /var/www/html
+            git clone https://github.com/gabrielle-ong/gameday-quest-web-resiliency.git
+            cp ./gameday-quest-web-resiliency/web_resiliency_quest-ui/* /var/www/html
             cd /var/www/html
-            echo "Availability Zone: $availabilityZone </span>" >> index.html 
-            cat second-half.html >> index.html
             cd /tmp
             usermod -a -G apache ec2-user   
             chown -R ec2-user:apache /var/www
