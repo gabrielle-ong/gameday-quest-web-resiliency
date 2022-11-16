@@ -74,9 +74,7 @@ Hmm... We want people to visit our application, not to go shopping.
 
 Connect Amazon CloudFront to the correct origin in order for your application to work! 
 
-Begin by visiting the Amazon Cloudfront service console, which looks something like this:
-
-![cf_console_task2]({})
+Begin by visiting the Amazon CloudFront service console.
 
 It seems like the correct origin should be the Application Load Balancer (ALB) that is fronting your Amazon EC2 instances. 
 
