@@ -41,7 +41,7 @@ WELCOME_2_INDEX=5
 WELCOME_2_MARKDOWN=True
 
 
-# Task 1 - Cloudfront distribution wrong-origin
+# Task 1 - CloudFront distribution wrong-origin
 TASK1_KEY="task1"
 TASK1_LABEL="Task 1: What is CloudFront distribution origin pointing to?"
 TASK1_VALUE="""
@@ -62,7 +62,7 @@ TASK1_WRONG_ORIGIN_MARKDOWN=True
 
 TASK1_CORRECT_ORIGIN_KEY="task1_correct_answer"
 TASK1_CORRECT_ORIGIN_LABEL="Task 1: Correct! However, that looks strange..."
-TASK1_CORRECT_ORIGIN_VALUE="Our CloudFront origin is currently pointing to www.amazon.com. Are they going shopping instead?"
+TASK1_CORRECT_ORIGIN_VALUE="Our CloudFront origin is currently pointing to www.amazon.com. Are they going shopping instead of our application?"
 TASK1_CORRECT_ORIGIN_INDEX=15
 TASK1_CORRECT_ORIGIN_MARKDOWN=True
 
@@ -70,8 +70,6 @@ TASK1_CORRECT_ORIGIN_MARKDOWN=True
 TASK2_KEY="task2"
 TASK2_LABEL="Task 2: Configure the CloudFront distribution origin to your application"
 TASK2_VALUE="""
-Hmm... We want people to visit our application, not to go shopping. 
-
 Connect Amazon CloudFront to the correct origin in order for your application to work! 
 
 Begin by visiting the Amazon CloudFront service console.
@@ -88,7 +86,7 @@ TASK2_COMPLETE_LABEL="Task 2: CloudFront origin attachment - Passed!"
 TASK2_COMPLETE_VALUE="""
 Phew! That was close!
 
-If you'd like, you can visit your Cloudfront Distribution Domain Name again, [{}](https://{}), in a new private browser to avoid your browser's
+If you'd like, you can visit your CloudFront Distribution Domain Name again, [{}](https://{}), in a new private browser to avoid your browser's
 cache.
 
 This time, it should open our custom application site instead of www.amazon.com. 
@@ -111,7 +109,7 @@ We are under attack by bad actors!!! We need to find out where the attack is com
 
 Find a way to log the traffic going through Amazon CloudFront to Amazon Simple Storage Service (S3).
 
-An S3 bucket to store the Cloudfront logs has been created for you. The bucket name would look similar to _gameday-cloudfront-logs-XXX-XXX_
+An S3 bucket to store the CloudFront logs has been created for you. The bucket name would look similar to _gameday-cloudfront-logs-XXX-XXX_
 
 """
 TASK3_INDEX=30
@@ -121,7 +119,7 @@ TASK3_MARKDOWN=True
 TASK3_COMPLETE_KEY="task3_complete"
 TASK3_COMPLETE_LABEL="Task 3: Enable logs - Passed!"
 TASK3_COMPLETE_VALUE="""
-Great job enabling Cloudfront Logs! 
+Great job enabling CloudFront Logs! 
 
 Here’s the current architecture:
 
@@ -136,7 +134,7 @@ TASK4_LABEL="Task 4: Get malicious IP attacker address"
 TASK4_VALUE="""
 With logging enabled, now the logs will be recorded in the Amazon Simple Storage Service (S3) bucket. 
 
-Logging may take some time. For simplicity, here is a sample Cloudfront log for you. 
+Logging may take some time. For simplicity, here is a sample CloudFront log for you. 
 
 Our security team has identified that it is from a bad actor trying to take down our Unicorn.Rentals application!
 
@@ -176,11 +174,7 @@ tell us whether we are have any security issues or are under extremely high traf
 
 Quickly set up an AWS Web Application Firewall (WAF) to block this IP address before the bad actors get to any more devices! 
 
-This task is your biggest task (yet). Here are some tips:
-* The WAF Web ACL for CloudFront has already been created for you, named _waf-web-acl_. In the Web ACL dashboard, change the dropdown region to Global (CloudFront) to see it.
-* You will create an IP Set (in Global Cloudfront region) for the malicious IP identified in task 4.
-* Then, in _waf-web-acl_, create your own WAF Rule for an IP Set to block this IP address. 
-
+The WAF Web ACL for CloudFront has already been created for you, named _waf-web-acl_. In the Web ACL dashboard, change the dropdown region to Global (CloudFront) to see it.
 ![waf_console]({})
 """
 TASK5_INDEX=50
@@ -208,17 +202,17 @@ The worst is over for now, but without RoboVax screaming, no one will be able to
 
 Let’s look at the metrics on how we can set up an alarm for future attacks.
 
-This is a Cloudwatch monitoring dashboard of some metrics during heavy traffic load. 
+This is a CloudWatch monitoring dashboard of some metrics during heavy traffic load. 
 
 ![cloudwatch_metrics]({})
 
 Notice which metric is spiking? Pick the right metric that identifies high traffic load.
 
-In your Amazon CloudWatch service dashboard, set up a CloudWatch alarm for this particular metric. Be sure to choose the metric for the correct Cloudwatch distribution!
+In your Amazon CloudWatch service dashboard, set up a CloudWatch alarm for this particular metric. Be sure to choose the metric for the correct CloudWatch distribution!
 
 _Note: If you're unable to find CloudWatch metrics for your distribution, please visit your CloudFront Domain Name URL, [{}](https://{}). You might have already done this in Task 1 and Task 2. The metrics should show up after 1-2 minutes of your visit._
 
-To configure the alarm, measure the average of this metric over 5 minutes. Set the alarm to be in alarm state using Anomaly detection, whenever RequestCount is Outside of the Band of threshold 2.
+To configure the alarm, measure the average of this metric over 5 minutes. Set the alarm to be in alarm state using Anomaly detection, whenever Requests are Outside of the Band of threshold 2.
 
 Notifications will be sent when the alarm state trigger is In Alarm.
 
@@ -247,11 +241,11 @@ TASK6_COMPLETE_MARKDOWN=True
 QUEST_COMPLETE_KEY='quest_complete'
 QUEST_COMPLETE_LABEL='CONGRATULATIONS!'
 QUEST_COMPLETE_VALUE="""
-You have successfully protected your application and increased web resiliency for RoboVax and Unicorn Rentals.
+You have successfully protected your application and increased web resiliency for RoboVax and Unicorn.Rentals.
 
 You configured CloudFront for your users to access your application quickly and reliably. When the bad actors tried to attack your application, you identified them with CloudFront Logs and blocked them using WAF Rules. 
 
-Lastly, you’ve set an alarm to detect future high traffic incidents so that you and your (ex-) boss, RoboVax can have a peace of mind.
+Lastly, you’ve set an alarm to detect future high traffic incidents so that you and your boss, RoboVax can have a peace of mind.
 
 Not bad, rookie. Maybe you'll be CTO soon?
 

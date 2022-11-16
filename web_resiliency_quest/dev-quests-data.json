@@ -4,7 +4,7 @@
         "quest-enabled": false,
         "quest-central-status": "DISABLED",
         "quest-name": "Web Resiliency",
-        "quest-description": "A developer reference quest to get acclimated with the AWS GameDay Quest Development Kit (QDK)",
+        "quest-description": "Increase Web Resiliency and protect your application from attackers!",
         "quest-difficulty": 1,
         "quest-use-case": "[\"Web Resiliency\"]",
         "quest-services": "[\"Amazon CloudFront\", \"AWS Web Application Firewall\", \"Amazon CloudWatch\", \"Amazon EC2\", \"Amazon Simple Storage Service (S3)\"]",
