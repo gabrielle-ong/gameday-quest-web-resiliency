@@ -825,6 +825,7 @@ Resources:
   # ║                                  │                          │   GameDay event.                                                                           ║
   # ║ DynamoDbScoreEventsTable         │ AWS::DynamoDB::Table     │ The Score Events table. Stores score events.                                               ║
   # ║ DynamoDbScoresTable              │ AWS::DynamoDB::Table     │ The Scoress table. Stores score events.                                                    ║
+  # ║ DynamoDbIdempotencyTable         │ AWS::DynamoDB::Table     │ The Idempotency table. Stores idempotency tokens to enable idempotent events.              ║
   # ╚══════════════════════════════════╧══════════════════════════╧════════════════════════════════════════════════════════════════════════════════════════════╝
   DynamoDbMockEventsTable:
     Type: AWS::DynamoDB::Table
@@ -985,6 +986,25 @@ Resources:
       - AttributeName: sk
         KeyType: RANGE
       TableName: gdQuestsApi-Scores
+
+  DynamoDbIdempotencyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: quest-id
+        AttributeType: S
+      - AttributeName: token
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: quest-id
+        KeyType: HASH
+      - AttributeName: token
+        KeyType: RANGE
+      TableName: gdQuestsApi-Idempotency
+      TimeToLiveSpecification:
+        AttributeName: expires
+        Enabled: true
 
   # ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
   # ║ IAM Resources                                                                                                                                            ║
@@ -1662,7 +1682,7 @@ Resources:
       - !Ref LambdaLayerQDK
       Role: !GetAtt IamRoleLambda.Arn
       Runtime: python3.9
-      Timeout: 120
+      Timeout: 300
       
   LambdaMockEvents:
     Type: AWS::Lambda::Function
@@ -2425,9 +2445,9 @@ Resources:
       Cluster: !Ref QDKEcsCluster
       TaskDefinition: !Ref QDKInteractionsTaskDefinition
       DeploymentConfiguration:
-        # DeploymentCircuitBreaker:
-        #   Enable: true
-        #   Rollback: true
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
         MinimumHealthyPercent: 100
         MaximumPercent: 200
       DesiredCount: 1
@@ -2458,9 +2478,9 @@ Resources:
       Cluster: !Ref QDKEcsCluster
       TaskDefinition: !Ref QDKEventTaskDefinition
       DeploymentConfiguration:
-        # DeploymentCircuitBreaker:
-        #   Enable: true
-        #   Rollback: true
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
         MinimumHealthyPercent: 100
         MaximumPercent: 200
       DesiredCount: 1
@@ -2491,9 +2511,9 @@ Resources:
       Cluster: !Ref QDKEcsCluster
       TaskDefinition: !Ref QDKScoringTaskDefinition
       DeploymentConfiguration:
-        # DeploymentCircuitBreaker:
-        #   Enable: true
-        #   Rollback: true
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
         MinimumHealthyPercent: 100
         MaximumPercent: 200
       DesiredCount: 1
@@ -2524,9 +2544,9 @@ Resources:
       Cluster: !Ref QDKEcsCluster
       TaskDefinition: !Ref QDKCronTaskDefinition
       DeploymentConfiguration:
-        # DeploymentCircuitBreaker:
-        #   Enable: true
-        #   Rollback: true
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
         MinimumHealthyPercent: 100
         MaximumPercent: 200
       DesiredCount: 0
@@ -2974,7 +2994,6 @@ Resources:
     Type: AWS::EC2::InternetGateway
   GatewayAttachement:
     Type: AWS::EC2::VPCGatewayAttachment
-    DependsOn: InternetGateway
     Properties:
       VpcId: !Ref 'VPC'
       InternetGatewayId: !Ref 'InternetGateway'
