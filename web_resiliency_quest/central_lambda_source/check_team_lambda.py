@@ -53,10 +53,10 @@ def lambda_handler(event, context):
     team_data = dynamodb_response['Item'].copy() # Check init_lambda for the format
 
     # Task 0 to start continuous scoring
-    if is_within_quest_duration(team_data):
-        team_data = continuous_scoring(quests_api_client, team_data)
+    # if is_within_quest_duration(team_data):
+    #     team_data = continuous_scoring(quests_api_client, team_data)
 
-    # Task 1 is check cloudfront origin
+    # Task 1 is check cr4loudfront origin
 
     # Task 2 evaluation
     team_data = attach_cloudfront_origin(quests_api_client, team_data)
@@ -82,19 +82,19 @@ def lambda_handler(event, context):
         dynamodb_utils.save_team_data(team_data, quest_team_status_table)
 
 # Task 0 - Welcome (Continuous scoring)
-def continuous_scoring(quests_api_client, team_data):
-    print(f"Continuous scoring started for team {team_data['team-id']}")
+# def continuous_scoring(quests_api_client, team_data):
+#     print(f"Continuous scoring started for team {team_data['team-id']}")
 
-    # Check whether quest is completed
-    if not team_data['quest-completed']:
-        quests_api_client.post_score_event(
-            team_id=team_data["team-id"],
-            quest_id=QUEST_ID,
-            description=scoring_const.CONTINUOUS_DESC,
-            points=scoring_const.CONTINUOUS_POINTS
-        )
+#     # Check whether quest is completed
+#     if not team_data['quest-completed']:
+#         quests_api_client.post_score_event(
+#             team_id=team_data["team-id"],
+#             quest_id=QUEST_ID,
+#             description=scoring_const.CONTINUOUS_DESC,
+#             points=scoring_const.CONTINUOUS_POINTS
+#         )
 
-    return team_data
+#     return team_data
 
 # Task 2 evaluation - CloudFront Distribution Origin
 def attach_cloudfront_origin(quests_api_client, team_data):
@@ -470,7 +470,10 @@ def calculate_bonus_points(quests_api_client, quest_id, team_data):
     minutes = int(time_diff.total_seconds() / 60)
 
     # Calculate bonus points based on elapsed time
-    bonus_points = int(scoring_const.QUEST_COMPLETE_POINTS / minutes * scoring_const.QUEST_COMPLETE_MULTIPLIER)
+    # award bonus points according to finish time to realistically (5 minutes) hit max bonus 50k points
+    # eg 5 mins = 50k points, 10 mins = 25k, 15 mins = 12k, 20 min = 12.5k, 30 min = 8.3k
+    # 40 min = 6.25k, 50 mins = 5k, 60 min = 4.1k. Worst case 1000 minutes = 250 points
+    bonus_points = int((scoring_const.QUEST_COMPLETE_POINTS / minutes) * (scoring_const.QUEST_COMPLETE_MULTIPLIER)**2)
     print(f"Bonus points on {scoring_const.QUEST_COMPLETE_POINTS} done in {minutes} minutes: {bonus_points}")
 
     return bonus_points
