@@ -138,7 +138,7 @@ Logging may take some time. For simplicity, here is a sample CloudFront log for 
 
 Our security team has identified that it is from a bad actor trying to take down our Unicorn.Rentals application!
 
-Do you know which IP address is the attack coming from?
+Do you know which IP address the attack is coming from?
 
 ```
 #Fields: date time ... cs-method cs(Host) cs-uri-stem sc-status ... x-forwarded-for
@@ -174,8 +174,12 @@ tell us whether we are have any security issues or are under extremely high traf
 
 Quickly set up an AWS Web Application Firewall (WAF) to block this IP address before the bad actors get to any more devices! 
 
-The WAF Web ACL for CloudFront has already been created for you, named _waf-web-acl_. In the Web ACL dashboard, change the dropdown region to Global (CloudFront) to see it.
+The WAF Web ACL for CloudFront has already been created for you, named _waf-web-acl_. 
+
+In the Web ACL dashboard, change the dropdown region to Global (CloudFront) to see it.
+
 ![waf_console]({})
+
 """
 TASK5_INDEX=50
 TASK5_MARKDOWN=True
@@ -200,7 +204,7 @@ TASK6_LABEL="Task 6: Set up Alarm for metrics"
 TASK6_VALUE="""
 The worst is over for now, but without RoboVax screaming, no one will be able to tell us of any attacks. 
 
-Let’s look at the metrics on how we can set up an alarm for future attacks.
+Let’s look at the metrics so we can set up an alarm for future attacks.
 
 This is a CloudWatch monitoring dashboard of some metrics during heavy traffic load. 
 
