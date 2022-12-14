@@ -236,8 +236,8 @@ Resources:
             yum install -y httpd wget git
             cd /tmp
             availabilityZone=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
-            git clone https://github.com/gabrielle-ong/gameday-quest-web-resiliency.git
-            cp ./gameday-quest-web-resiliency/web_resiliency_quest-ui/* /var/www/html
+            git clone https://github.com/gabrielle-ong/web_resiliency_quest_ui.git
+            cp ./web_resiliency_quest_ui/* /var/www/html
             cd /var/www/html
             cd /tmp
             usermod -a -G apache ec2-user   
