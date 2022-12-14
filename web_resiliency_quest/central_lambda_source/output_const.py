@@ -132,9 +132,9 @@ TASK3_COMPLETE_MARKDOWN=True
 TASK4_KEY="task4"
 TASK4_LABEL="Task 4: Get malicious IP attacker address"
 TASK4_VALUE="""
-With logging enabled, now the logs will be recorded in the Amazon Simple Storage Service (S3) bucket. 
+With logging enabled, now the logs will be recorded in the Amazon Simple Storage Service (S3) bucket.
 
-Logging may take some time. For simplicity, here is a sample CloudFront log for you. 
+For this quest, we will use the CloudFront log below. You do not need to look for any logs in S3.
 
 Our security team has identified that it is from a bad actor trying to take down our Unicorn.Rentals application!
 
